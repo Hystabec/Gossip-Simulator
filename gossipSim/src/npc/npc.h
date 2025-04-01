@@ -14,7 +14,7 @@ namespace GS { namespace npc {
 
 		void tick();
 
-		inline std::string getName() { return m_name; }
+		inline std::string getName() const { return m_name; }
 
 	public:
 		/// @brief This will add new relation to an npc with a relation value between 100 & -100

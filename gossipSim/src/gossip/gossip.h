@@ -15,16 +15,15 @@ namespace GS { namespace gossip {
 	{
 		GossipType type;
 		std::string aboutNPC;
-		std::string startedFromNPC;
 
-		Gossip(GossipType type, const std::string& about, const std::string& startedFrom)
-			: type(type), aboutNPC(about), startedFromNPC(startedFrom)
+		Gossip(GossipType type, const std::string& about)
+			: type(type), aboutNPC(about)
 		{
 		}
 
 		bool operator==(const Gossip& other)
 		{
-			return (this->type == other.type && this->aboutNPC == other.aboutNPC && this->startedFromNPC == other.startedFromNPC);
+			return (this->type == other.type && this->aboutNPC == other.aboutNPC);
 		}
 	};
 

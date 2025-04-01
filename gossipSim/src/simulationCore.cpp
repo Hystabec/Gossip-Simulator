@@ -2,11 +2,10 @@
 
 namespace GS {
 
-	int count = 0;
-
 	simCore::simCore()
 	{
 		//parseNodeFiles
+
 		int npcCount = 3;
 		for (int i = 0; i < npcCount; i++)
 		{
@@ -36,14 +35,21 @@ namespace GS {
 
 	bool simCore::update()
 	{
-		if (count == 5)
-			return false;
-
 		for (auto& npc : m_npcVec)
 			npc->tick();
 
-		count++;
 		return true;
+	}
+
+	const std::shared_ptr<npc::NPC>& simCore::findNPC(const std::string& name) const
+	{
+		for (auto& npc : m_npcVec)
+		{
+			if (npc->getName() == name)
+				return npc;
+		}
+
+		return nullptr;
 	}
 
 }

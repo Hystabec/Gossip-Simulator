@@ -1,0 +1,15 @@
+create a gossip manager that can monitor gossip throughout the units
+
+gossip manager should hold a ptr to all gossip created through it so that it can be tracked
+The gossip manager can also hold data about where the gossip started, who has heard it, etc
+
+creating a gossip instance should be done through the manager (return(std::shared_ptr<Gossip>) gossipManager.createGossip(type, aboutNpc))
+--- becomes some like [ npc.startGossip(gossipManager.createGossip(gossip::negative, npc2)); ]
+
+when creating user interface a list of active gossips could be held so the user could select one and it would highligh nodes.
+
+Npcs should hold a list of activly heared gossips so when the get ticked they can act on them - this way more than one gossip can also be active
+
+
+Extra gossip considerations:
+How long its veen since the gossip started - the longer its been the less relevent it is

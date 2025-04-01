@@ -6,6 +6,9 @@ int main()
 {
 	GS::simCore gossipCore;
 
+	//Example sudo API
+	//gossipCore.getGossipManager().startGossip(/*GossipData*/);
+
 	bool loop = true;
 	while (loop)
 	{
