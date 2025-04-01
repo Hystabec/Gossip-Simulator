@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 
+#include <string>
 #include <memory>
 #include <unordered_map>
 
@@ -16,6 +16,7 @@ namespace GS { namespace npc {
 
 #pragma region relations
 
+	public:
 		/// @brief This will add new relation to an npc with a relation value between 100 & -100
 		void addRelation(std::shared_ptr<NPC> npc, int relationValue);
 
@@ -30,10 +31,10 @@ namespace GS { namespace npc {
 		/// @brief clears all realtions for this NPC
 		void clearRelations();
 
-#pragma endregion
-
 	private:
 		bool npcExsitsInMap(std::shared_ptr<NPC> npc);
+
+#pragma endregion
 
 	private:
 		std::string m_name;

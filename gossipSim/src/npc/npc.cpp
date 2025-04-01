@@ -5,11 +5,6 @@
 
 namespace GS { namespace npc {
 
-	int clamp_relation_value(int val)
-	{
-		return std::clamp(val, -100, 100);
-	}
-
 	NPC::NPC(const std::string& name)
 		: m_name(name)
 	{
@@ -23,6 +18,13 @@ namespace GS { namespace npc {
 
 	void NPC::tick()
 	{
+	}
+
+#pragma region relations
+
+	int clamp_relation_value(int val)
+	{
+		return std::clamp(val, -100, 100);
 	}
 
 	void NPC::addRelation(std::shared_ptr<NPC> npc, int relationValue)
@@ -74,5 +76,7 @@ namespace GS { namespace npc {
 	{
 		return m_relationMap.find(npc) != m_relationMap.end() ? true : false;
 	}
+
+#pragma endregion
 
 } }
