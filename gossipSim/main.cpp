@@ -1,6 +1,15 @@
-#include "src/temp.h"
+#include "src/simulationCore.h"
+
+#include <thread>
 
 int main()
 {
-	tempFile::Console_log("Hello world!");
+	GS::simCore gossipCore;
+
+	bool loop = true;
+	while (loop)
+	{
+		loop = gossipCore.update();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	}
 }
