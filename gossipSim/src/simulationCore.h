@@ -10,6 +10,7 @@ namespace GS {
 	{
 	public:
 		simCore();
+		~simCore();
 
 		/// @brief updates the core returns false if the core ended 
 		bool update();
