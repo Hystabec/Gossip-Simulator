@@ -14,7 +14,7 @@ namespace GS { namespace npc {
 
 		void tick();
 
-#pragma region relations
+		inline std::string getName() { return m_name; }
 
 	public:
 		/// @brief This will add new relation to an npc with a relation value between 100 & -100
@@ -33,8 +33,6 @@ namespace GS { namespace npc {
 
 	private:
 		bool npcExsitsInMap(std::shared_ptr<NPC> npc);
-
-#pragma endregion
 
 	private:
 		std::string m_name;

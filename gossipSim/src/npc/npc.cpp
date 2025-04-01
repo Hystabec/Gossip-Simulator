@@ -20,9 +20,7 @@ namespace GS { namespace npc {
 	{
 	}
 
-#pragma region relations
-
-	int clamp_relation_value(int val)
+	static int clamp_relation_value(int val)
 	{
 		return std::clamp(val, -100, 100);
 	}
@@ -77,6 +75,5 @@ namespace GS { namespace npc {
 		return m_relationMap.find(npc) != m_relationMap.end() ? true : false;
 	}
 
-#pragma endregion
 
 } }

@@ -1,5 +1,6 @@
 #pragma once
 #include "npc/npc.h"
+#include "gossip/gossip.h"
 
 #include <memory>
 #include <vector>
