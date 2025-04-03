@@ -26,6 +26,7 @@ project "gossipSim"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/main.cpp",
 		"%{prj.name}/Dependencies/pugixml/pugixml.hpp",
 		"%{prj.name}/Dependencies/pugixml/pugixml.cpp",
 		"%{prj.name}/Dependencies/pugixml/pugiconfig.hpp"

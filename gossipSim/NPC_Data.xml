@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listOfNPC>
+    <NPC name="Alpha">
+        <relationships>
+            <relation npc="Bravo" value="100"/>
+            <relation npc="Delta" value="10"/>
+        </relationships>
+    </NPC>
+    <NPC name="Bravo">
+        <relationships>
+            <relation npc="Alpha" value="100"/>
+            <relation npc="Charlie" value="-50"/>
+        </relationships>
+    </NPC>
+    <NPC name="Charlie">
+        <relationships>
+            <relation npc="Bravo" value="-50"/>
+        </relationships>
+    </NPC>
+    <NPC name="Delta">
+        <relationships>
+            <relation npc="Alpha" value="10"/>
+        </relationships>
+    </NPC>
+</listOfNPC>

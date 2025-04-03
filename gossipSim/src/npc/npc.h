@@ -1,9 +1,7 @@
 #pragma once
 
 #include <string>
-#include <memory>
 #include <unordered_map>
-#include "../gossip/gossip.h"
 
 namespace GS { namespace npc {
 
@@ -19,30 +17,26 @@ namespace GS { namespace npc {
 
 		operator std::string() { return m_name; }
 
-		void tellGossip(std::shared_ptr<NPC> npcToTell, gossip::Gossip& gossipToTell);
-
-		void hearGossip(std::shared_ptr<NPC> npcHeardFrom, gossip::Gossip& gossipHeard);
-
 		/// @brief This will add new relation to an npc with a relation value between 100 & -100
-		void addRelation(std::shared_ptr<NPC> npc, int relationValue);
+		void addRelation(const std::string& npc, int relationValue);
 
 		/// @brief If a relation to the given npc is found it will update the value
-		void updateRelation(std::shared_ptr<NPC> npc, int relationValue);
+		void updateRelation(const std::string& npc, int relationValue);
 
 		/// @brief Returns the value of the relation to an NPC, a bool* can be passed to check if a relation is found 
-		int checkRelation(std::shared_ptr<NPC> npc, bool* checkBool = nullptr);
+		int checkRelation(const std::string& npc, bool* checkBool = nullptr);
 
-		void removeRelation(std::shared_ptr<NPC> npc);
+		void removeRelation(const std::string& npc);
 
 		/// @brief clears all realtions for this NPC
 		void clearRelations();
 
 	private:
-		bool npcExsitsInMap(std::shared_ptr<NPC> npc);
+		bool npcExsitsInMap(const std::string& npc);
 
 	private:
 		std::string m_name;
-		std::unordered_map<std::shared_ptr<NPC>, int> m_relationMap;
+		std::unordered_map<std::string, int> m_relationMap;
 	};
 
 } }

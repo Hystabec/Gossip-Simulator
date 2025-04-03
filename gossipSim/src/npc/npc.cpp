@@ -25,16 +25,7 @@ namespace GS { namespace npc {
 		return std::clamp(val, -100, 100);
 	}
 
-	void NPC::tellGossip(std::shared_ptr<NPC> npcToTell, gossip::Gossip& gossipToTell)
-	{
-		npcToTell->hearGossip(std::make_shared<NPC>(this), gossipToTell);
-	}
-
-	void NPC::hearGossip(std::shared_ptr<NPC> npcHeardFrom, gossip::Gossip& gossipHeard)
-	{
-	}
-
-	void NPC::addRelation(std::shared_ptr<NPC> npc, int relationValue)
+	void NPC::addRelation(const std::string& npc, int relationValue)
 	{
 		if (!npcExsitsInMap(npc))
 		{
@@ -42,7 +33,7 @@ namespace GS { namespace npc {
 		}
 	}
 
-	void NPC::updateRelation(std::shared_ptr<NPC> npc, int relationValue)
+	void NPC::updateRelation(const std::string& npc, int relationValue)
 	{
 		if (npcExsitsInMap(npc))
 		{
@@ -50,7 +41,7 @@ namespace GS { namespace npc {
 		}
 	}
 
-	int NPC::checkRelation(std::shared_ptr<NPC> npc, bool* checkBool)
+	int NPC::checkRelation(const std::string& npc, bool* checkBool)
 	{
 		if (npcExsitsInMap(npc))
 		{
@@ -66,7 +57,7 @@ namespace GS { namespace npc {
 		return 0;
 	}
 
-	void NPC::removeRelation(std::shared_ptr<NPC> npc)
+	void NPC::removeRelation(const std::string& npc)
 	{
 		if (npcExsitsInMap(npc))
 		{
@@ -79,7 +70,7 @@ namespace GS { namespace npc {
 		m_relationMap.clear();
 	}
 
-	bool NPC::npcExsitsInMap(std::shared_ptr<NPC> npc)
+	bool NPC::npcExsitsInMap(const std::string& npc)
 	{
 		return m_relationMap.find(npc) != m_relationMap.end() ? true : false;
 	}
