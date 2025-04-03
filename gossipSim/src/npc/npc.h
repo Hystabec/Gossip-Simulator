@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include "../gossip/gossip.h"
 
 namespace GS { namespace npc {
 
@@ -16,7 +17,12 @@ namespace GS { namespace npc {
 
 		inline std::string getName() const { return m_name; }
 
-	public:
+		operator std::string() { return m_name; }
+
+		void tellGossip(std::shared_ptr<NPC> npcToTell, gossip::Gossip& gossipToTell);
+
+		void hearGossip(std::shared_ptr<NPC> npcHeardFrom, gossip::Gossip& gossipHeard);
+
 		/// @brief This will add new relation to an npc with a relation value between 100 & -100
 		void addRelation(std::shared_ptr<NPC> npc, int relationValue);
 

@@ -25,6 +25,15 @@ namespace GS { namespace npc {
 		return std::clamp(val, -100, 100);
 	}
 
+	void NPC::tellGossip(std::shared_ptr<NPC> npcToTell, gossip::Gossip& gossipToTell)
+	{
+		npcToTell->hearGossip(std::make_shared<NPC>(this), gossipToTell);
+	}
+
+	void NPC::hearGossip(std::shared_ptr<NPC> npcHeardFrom, gossip::Gossip& gossipHeard)
+	{
+	}
+
 	void NPC::addRelation(std::shared_ptr<NPC> npc, int relationValue)
 	{
 		if (!npcExsitsInMap(npc))

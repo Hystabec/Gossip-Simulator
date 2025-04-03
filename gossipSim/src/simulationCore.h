@@ -1,6 +1,8 @@
 #pragma once
+
 #include "npc/npc.h"
 #include "gossip/gossip.h"
+#include "gossip/gossipManager.h"
 
 #include <memory>
 #include <vector>
@@ -21,6 +23,8 @@ namespace GS {
 
 	private:
 		std::vector<std::shared_ptr<npc::NPC>> m_npcVec;
+		std::unique_ptr<gossip::GossipManager> m_gossipManager;
+		uint32_t updateCount = 0;
 	};
 
 }

@@ -12,6 +12,7 @@ namespace GS {
 			m_npcVec.push_back(std::make_shared<npc::NPC>(std::to_string(i)));
 		}
 
+		//Temp relation testing
 		for (auto& npc : m_npcVec)
 		{
 			for (auto& npc2 : m_npcVec)
@@ -22,6 +23,8 @@ namespace GS {
 				npc->addRelation(npc2, 0);
 			}
 		};
+
+		m_gossipManager = std::make_unique<gossip::GossipManager>(m_npcVec);
 	}
 
 	simCore::~simCore()
@@ -38,6 +41,7 @@ namespace GS {
 		for (auto& npc : m_npcVec)
 			npc->tick();
 
+		updateCount++;
 		return true;
 	}
 
