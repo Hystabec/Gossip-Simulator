@@ -13,3 +13,6 @@ Npcs should hold a list of activly heared gossips so when the get ticked they ca
 
 Extra gossip considerations:
 How long its veen since the gossip started - the longer its been the less relevent it is
+
+
+For UI i could make daedalus engine a sub module as it should currently have enough functionality to make a linked node structure
