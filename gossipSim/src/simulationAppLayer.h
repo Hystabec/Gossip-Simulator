@@ -1,6 +1,8 @@
 #pragma once
 #include <Daedalus.h>
 
+#include "simulationCore.h"
+
 class SimLayer : public daedalusCore::application::Layer
 {
 public:
@@ -14,5 +16,6 @@ public:
 
 private:
 	daedalusCore::graphics::OrthographicCameraController m_camController;
-	daedalusCore::shr_ptr<daedalusCore::graphics::Texture2D> m_circleTexture;
+
+	GS::simCore m_simCore;
 };

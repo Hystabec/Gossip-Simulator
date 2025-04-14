@@ -1,7 +1,5 @@
 #include "npc.h"
-
-#include <iostream>
-#include <algorithm>
+#include <Daedalus.h>
 
 namespace GS { namespace npc {
 
@@ -13,7 +11,7 @@ namespace GS { namespace npc {
 	NPC::~NPC()
 	{
 		//Here to check object is being destroyed
-		std::cout << "NPC: " << m_name << " destroyed\n";
+		DD_LOG_INFO("NPC: {} destroyed", m_name);
 	}
 
 	void NPC::tick()
