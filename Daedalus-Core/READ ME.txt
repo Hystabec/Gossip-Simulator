@@ -1,1 +1,0 @@
-This folder being here is a hacky fix to store the engines 2D shader
