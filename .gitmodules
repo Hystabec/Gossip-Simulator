@@ -1,0 +1,3 @@
+[submodule "gossipSim/Dependencies/Daedalus/Engine"]
+	path = gossipSim/Dependencies/Daedalus/Engine
+	url = https://github.com/Hystabec/DaedalusEngine
