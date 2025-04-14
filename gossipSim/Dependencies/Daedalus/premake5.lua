@@ -1,12 +1,12 @@
-include "Engine/Daedalus-Core/Dependencies/ImGui"
-
-dependFol = "Daedalus-Core/Dependencies"
+dependFol = "Engine/Daedalus-Core/Dependencies"
 dependDir = {}
 dependDir["GLFW"] = dependFol .. "/GLFW"
 dependDir["GLEW"] = dependFol .. "/GLEW"
 dependDir["spdlog"] = dependFol .. "/spdlog"
 dependDir["ImGui"] = dependFol .. "/ImGui"
 dependDir["stb_image"] = dependFol .. "/stb_image"
+
+include "Engine/Daedalus-Core/Dependencies/ImGui"
 
 project "Daedalus-Core"
 	location "Engine/Daedalus-Core"
@@ -38,7 +38,7 @@ project "Daedalus-Core"
 
 	includedirs
 	{
-		"%{prj.name}/src",
+		"Engine/Daedalus-Core/src",
 		"%{dependDir.GLFW}/include",
 		"%{dependDir.GLEW}/include",
 		"%{dependDir.spdlog}/include",

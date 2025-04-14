@@ -20,6 +20,7 @@ SimLayer::SimLayer()
 
 void SimLayer::attach()
 {
+	
 }
 
 void SimLayer::detach()
@@ -28,7 +29,8 @@ void SimLayer::detach()
 
 void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 {
-	DD_LOG_INFO("Hello world");
+	daedalusCore::graphics::RenderCommands::setClearColour(daedalusCore::utils::colour_vec4_to_normalized_vec4({ 36,36,36,255 }));
+	daedalusCore::graphics::RenderCommands::clear();
 }
 
 void SimLayer::imGuiRender()
