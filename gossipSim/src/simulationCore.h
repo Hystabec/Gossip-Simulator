@@ -23,8 +23,6 @@ namespace GS {
 		//inline const std::vector<npc::NPC*>& getNPCVector() const { return m_npcVec; }
 
 	private:
-		daedalusCore::shr_ptr<daedalusCore::graphics::Texture2D> m_circleTexture;
-
 		std::vector<npc::NPC> m_npcVec;
 		gossip::GossipManager m_gossipManager;
 

@@ -1,10 +1,14 @@
 #include "npc.h"
-#include <Daedalus.h>
 
 namespace GS { namespace npc {
 
-	NPC::NPC(const std::string& name)
-		: m_name(name)
+	NPC::NPC()
+		: m_name("NULL")
+	{
+	}
+
+	NPC::NPC(const std::string& name, const daedalusCore::graphics::primatives2D::QuadProperties& renderProp)
+		: m_name(name), m_renderProperties(renderProp)
 	{
 	}
 
@@ -16,6 +20,11 @@ namespace GS { namespace npc {
 
 	void NPC::tick()
 	{
+	}
+
+	void NPC::render()
+	{
+		daedalusCore::graphics::Renderer2D::drawQuad(m_renderProperties);
 	}
 
 	static int clamp_relation_value(int val)

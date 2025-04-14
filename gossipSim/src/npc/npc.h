@@ -2,16 +2,20 @@
 
 #include <string>
 #include <unordered_map>
+#include <Daedalus.h>
 
 namespace GS { namespace npc {
 
 	class NPC
 	{
 	public:
-		NPC(const std::string& name);
+		NPC();
+		NPC(const std::string& name, const daedalusCore::graphics::primatives2D::QuadProperties& renderProps);
 		~NPC();
 
 		void tick();
+
+		void render();
 
 		inline std::string getName() const { return m_name; }
 
@@ -37,6 +41,7 @@ namespace GS { namespace npc {
 	private:
 		std::string m_name;
 		std::unordered_map<std::string, int> m_relationMap;
+		daedalusCore::graphics::primatives2D::QuadProperties m_renderProperties;
 	};
 
 } }
