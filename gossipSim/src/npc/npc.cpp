@@ -101,5 +101,4 @@ namespace GS { namespace npc {
 		return m_relationMap.find(npc) != m_relationMap.end() ? true : false;
 	}
 
-
 } }

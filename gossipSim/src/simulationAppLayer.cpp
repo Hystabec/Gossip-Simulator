@@ -2,6 +2,7 @@
 
 #include "pugixml.hpp"
 #include "imgui.h"
+#include "mathsUtils/vec2Utils.h"
 
 //GS::simCore gossipCore;
 
@@ -77,6 +78,7 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 		if (m_mouseInBoundsThisFrame)
 			continue;
 		
+
 		if (npc.inPointInBounds(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition())))
 		{
 			m_mouseInBoundsThisFrame = true;
@@ -84,14 +86,43 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 		}
 	}
 
+	if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
+	{
+		m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
+	}
+
 	daedalusCore::graphics::RenderCommands::setClearColour(daedalusCore::utils::colour_vec4_to_normalized_vec4({ 36,36,36,255 }));
 	daedalusCore::graphics::RenderCommands::clear();
 
 	daedalusCore::graphics::Renderer2D::begin(m_camController.getCamera());
 	
+	if (m_mouseInBoundsThisFrame)
+	{
+		for (const auto& npcRel : m_hoveredNPC->getRelationMap())
+		{
+			daedalusCore::maths::vec2 hovPos = m_hoveredNPC->getPosition();
+			const GS::npc::NPC& otherNPC = findNPC(npcRel.first);
+
+			if (otherNPC.getName() == "NULL")
+				continue;
+
+			daedalusCore::maths::vec2 otherPos = otherNPC.getPosition();
+			daedalusCore::maths::vec2 diffrence = hovPos - otherPos;
+			daedalusCore::maths::vec2 centrePoint = (hovPos + otherPos) / 2;
+
+			daedalusCore::graphics::Renderer2D::drawRotatedQuad(
+				{
+					{ centrePoint.x, centrePoint.y, -0.1f },
+					{ ((float)abs(diffrence.x) + (float)abs(diffrence.y)) , relationLineWidth},
+					mathsUtils::angle_of_vec2(diffrence),
+					npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour
+				});
+		}
+	}
+
 	for (auto& npc : m_npcVec)
 		npc.render();
-	
+
 	daedalusCore::graphics::Renderer2D::end();
 }
 

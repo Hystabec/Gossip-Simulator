@@ -34,7 +34,11 @@ namespace GS { namespace npc {
 
 		/// @brief clears all realtions for this NPC
 		void clearRelations();
+		inline const std::unordered_map<std::string, int>& getRelationMap() const { return m_relationMap; }
 
+		inline const daedalusCore::maths::vec2& getPosition() const { return { m_renderProperties.position.x, m_renderProperties.position.y }; };
+		inline void setPosition(const daedalusCore::maths::vec2& newPos) { m_renderProperties.position = { newPos.x, newPos.y, m_renderProperties.position.z }; }
+		
 		bool inPointInBounds(const daedalusCore::maths::vec2& pointPos);
 		void displayDataToImGui();
 
