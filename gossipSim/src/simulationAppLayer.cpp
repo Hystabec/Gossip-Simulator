@@ -1,6 +1,7 @@
 #include "simulationAppLayer.h"
 
 #include "pugixml.hpp"
+#include "imgui.h"
 
 //GS::simCore gossipCore;
 
@@ -65,13 +66,23 @@ void SimLayer::detach()
 
 void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 {
+	m_mouseInBoundsThisFrame = false;
 	m_camController.update(dt);
 
-	m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition());
-
 	for (auto& npc : m_npcVec)
+	{
 		npc.tick();
-	
+		//check if mouse is hovering an NPCs
+
+		if (m_mouseInBoundsThisFrame)
+			continue;
+		
+		if (npc.inPointInBounds(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition())))
+		{
+			m_mouseInBoundsThisFrame = true;
+			m_hoveredNPC = &npc;
+		}
+	}
 
 	daedalusCore::graphics::RenderCommands::setClearColour(daedalusCore::utils::colour_vec4_to_normalized_vec4({ 36,36,36,255 }));
 	daedalusCore::graphics::RenderCommands::clear();
@@ -82,12 +93,19 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 		npc.render();
 	
 	daedalusCore::graphics::Renderer2D::end();
-
-	updateCount++;
 }
 
 void SimLayer::imGuiRender()
 {
+	ImGui::Begin("NPC Details");
+	if (m_mouseInBoundsThisFrame)
+	{
+		m_hoveredNPC->displayDataToImGui();
+	}
+	else
+		ImGui::Text("No NPC Hovered");
+
+	ImGui::End();
 }
 
 void SimLayer::onEvent(daedalusCore::event::Event& e)

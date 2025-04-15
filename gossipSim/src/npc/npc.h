@@ -35,6 +35,9 @@ namespace GS { namespace npc {
 		/// @brief clears all realtions for this NPC
 		void clearRelations();
 
+		bool inPointInBounds(const daedalusCore::maths::vec2& pointPos);
+		void displayDataToImGui();
+
 	private:
 		bool npcExsitsInMap(const std::string& npc);
 

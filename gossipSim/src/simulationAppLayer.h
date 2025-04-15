@@ -24,5 +24,6 @@ private:
 	std::vector<GS::npc::NPC> m_npcVec;
 	GS::gossip::GossipManager m_gossipManager;
 
-	uint32_t updateCount = 0;
+	bool m_mouseInBoundsThisFrame = false;
+	GS::npc::NPC* m_hoveredNPC = nullptr;
 };

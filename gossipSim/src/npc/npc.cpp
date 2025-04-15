@@ -1,4 +1,5 @@
 #include "npc.h"
+#include "imgui.h"
 
 namespace GS { namespace npc {
 
@@ -75,6 +76,24 @@ namespace GS { namespace npc {
 	void NPC::clearRelations()
 	{
 		m_relationMap.clear();
+	}
+
+	bool NPC::inPointInBounds(const daedalusCore::maths::vec2& pointPos)
+	{
+		daedalusCore::maths::vec2 dif = daedalusCore::maths::vec2(m_renderProperties.position.x, m_renderProperties.position.y) - pointPos;
+
+		if ((float)(abs(dif.x) + (float)abs(dif.y)) <= m_renderProperties.size.x)
+			return true;
+
+		return false;
+	}
+
+	void NPC::displayDataToImGui()
+	{
+		ImGui::Text("NPC Name: %s", m_name.c_str());
+		ImGui::SeparatorText("Relations");
+		for (auto relation : m_relationMap)
+			ImGui::Text("NPC: %s, Value: %i", relation.first.c_str(), relation.second);
 	}
 
 	bool NPC::npcExsitsInMap(const std::string& npc)
