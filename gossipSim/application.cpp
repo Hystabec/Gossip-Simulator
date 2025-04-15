@@ -7,7 +7,7 @@ class GossipSim_App : public daedalusCore::Application
 {
 public:
 	GossipSim_App()
-		: Application("Gossip Sim", 1280, 720, true)
+		: Application("Gossip Sim", 1280, 720, false)
 	{
 		this->pushLayer(new SimLayer());
 	}

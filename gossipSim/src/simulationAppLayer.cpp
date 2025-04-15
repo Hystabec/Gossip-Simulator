@@ -37,13 +37,13 @@ void SimLayer::attach()
 	m_npcVec.reserve(std::distance(npcDoc.child("listOfNPC").begin(), npcDoc.child("listOfNPC").end()));
 
 	//parseNodeFiles - generate nodes
-	int npcX = 0;
-	int npcY = 0;
+	int npcX = 0, npcY = 0;
+	int npcCount = 0;
 	for (pugi::xml_node node_NPC : npcDoc.child("listOfNPC"))
 	{
 		DD_LOG_INFO("NPC ({}) constucted", node_NPC.attribute("name").as_string());
 
-		quadProps.position = { (float)npcX + -1.0f, (float)-npcY + 0.75f, 0.0f };
+		quadProps.position = { (float)npcX + -1.0f, (float)-npcY + 0.75f, (float)npcCount * 0.01f };
 
 		m_npcVec.emplace_back(node_NPC.attribute("name").as_string(), quadProps);
 		GS::npc::NPC& curNPC = m_npcVec.back();
@@ -58,6 +58,7 @@ void SimLayer::attach()
 			npcX = 0;
 			npcY++;
 		}
+		npcCount++;
 	}
 }
 
@@ -91,6 +92,9 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 		m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
 	}
 
+#ifndef DD_DISTRO
+	daedalusCore::graphics::Renderer2D::resetStats();
+#endif
 	daedalusCore::graphics::RenderCommands::setClearColour(daedalusCore::utils::colour_vec4_to_normalized_vec4({ 36,36,36,255 }));
 	daedalusCore::graphics::RenderCommands::clear();
 
@@ -128,6 +132,19 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 
 void SimLayer::imGuiRender()
 {
+#ifndef DD_DISTRO
+	ImGui::Begin("Settings");
+
+	auto stats = daedalusCore::graphics::Renderer2D::getStats();
+	ImGui::Text("Renderer2D Stats:");
+	ImGui::Text("Draw calls: %d", stats.drawCalls);
+	ImGui::Text("Quads: %d", stats.quadCount);
+	ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+
+	ImGui::End();
+#endif
+
 	ImGui::Begin("NPC Details");
 	if (m_mouseInBoundsThisFrame)
 	{
