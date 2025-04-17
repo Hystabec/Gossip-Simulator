@@ -15,13 +15,7 @@ public:
 	void imGuiRender() override;
 	void onEvent(daedalusCore::event::Event& e) override;
 
-private:
 	const GS::npc::NPC& findNPC(const std::string& name) const;
-
-public:
-	const daedalusCore::maths::vec4 negativeRelationColour = { 0.8f, 0.2f, 0.2f, 1.0f };
-	const daedalusCore::maths::vec4 positiveRelationColour = { 0.2f, 0.8f, 0.2f, 1.0f };
-	const float relationLineWidth = 0.05f;
 
 private:
 	daedalusCore::graphics::OrthographicCameraController m_camController;

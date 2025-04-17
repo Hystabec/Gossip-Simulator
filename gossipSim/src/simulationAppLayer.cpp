@@ -102,26 +102,11 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	
 	if (m_mouseInBoundsThisFrame)
 	{
-		for (const auto& npcRel : m_hoveredNPC->getRelationMap())
-		{
-			daedalusCore::maths::vec2 hovPos = m_hoveredNPC->getPosition();
-			const GS::npc::NPC& otherNPC = findNPC(npcRel.first);
-
-			if (otherNPC.getName() == "NULL")
-				continue;
-
-			daedalusCore::maths::vec2 otherPos = otherNPC.getPosition();
-			daedalusCore::maths::vec2 diffrence = hovPos - otherPos;
-			daedalusCore::maths::vec2 centrePoint = (hovPos + otherPos) / 2;
-
-			daedalusCore::graphics::Renderer2D::drawRotatedQuad(
-				{
-					{ centrePoint.x, centrePoint.y, -0.1f },
-					{ ((float)abs(diffrence.x) + (float)abs(diffrence.y)) , relationLineWidth},
-					mathsUtils::angle_of_vec2(diffrence),
-					npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour
-				});
-		}
+		/*this function is really buggy - if hovering over NPC 1 or NPC 2
+		  then if you move NPC 4 it will be renderer 2 times. 
+		  The angles between the nodes is also being calculated incorrecly 
+		  so the links between nodes arent alreays correctly represented*/
+		m_hoveredNPC->renderRelations(this);
 	}
 
 	for (auto& npc : m_npcVec)

@@ -1,6 +1,9 @@
 #include "npc.h"
 #include "imgui.h"
 
+#include "../simulationAppLayer.h"
+#include "../mathsUtils/vec2Utils.h"
+
 namespace GS { namespace npc {
 
 	NPC::NPC()
@@ -26,6 +29,32 @@ namespace GS { namespace npc {
 	void NPC::render()
 	{
 		daedalusCore::graphics::Renderer2D::drawQuad(m_renderProperties);
+	}
+
+	void NPC::renderRelations(void* sl)
+	{
+		DD_LOG_TRACE("Rendering {} relations", m_name);
+
+		for (const auto& npcRel : m_relationMap)
+		{
+			daedalusCore::maths::vec2 asVec2Pos = { m_renderProperties.position.x, m_renderProperties.position.y };
+			const GS::npc::NPC& otherNPC = ((SimLayer*)sl)->findNPC(npcRel.first);
+
+			if (otherNPC.getName() == "NULL")
+				continue;
+
+			daedalusCore::maths::vec2 otherPos = otherNPC.getPosition();
+			daedalusCore::maths::vec2 diffrence = asVec2Pos - otherPos;
+			daedalusCore::maths::vec2 centrePoint = (asVec2Pos + otherPos) / 2;
+
+			daedalusCore::graphics::Renderer2D::drawRotatedQuad(
+				{
+					{ centrePoint.x, centrePoint.y, -0.1f },
+					{ ((float)abs(diffrence.x) + (float)abs(diffrence.y)) , relationLineWidth},
+					mathsUtils::angle_of_vec2(diffrence),
+					npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour
+				});
+		}
 	}
 
 	static int clamp_relation_value(int val)

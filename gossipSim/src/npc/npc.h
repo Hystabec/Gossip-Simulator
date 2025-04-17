@@ -17,6 +17,11 @@ namespace GS { namespace npc {
 
 		void render();
 
+		/* I have passed as a void* even though it will be cast to a SimLayer*
+		 this is to avoid having to include simulationAppLayer.h in this file
+		 i could pre declare the class, which should be changed if this works */
+		void renderRelations(void* sl);
+
 		inline std::string getName() const { return m_name; }
 
 		operator std::string() { return m_name; }
@@ -50,5 +55,9 @@ namespace GS { namespace npc {
 		std::unordered_map<std::string, int> m_relationMap;
 		daedalusCore::graphics::primatives2D::QuadProperties m_renderProperties;
 	};
+
+	const daedalusCore::maths::vec4 negativeRelationColour = { 0.8f, 0.2f, 0.2f, 1.0f };
+	const daedalusCore::maths::vec4 positiveRelationColour = { 0.2f, 0.8f, 0.2f, 1.0f };
+	const float relationLineWidth = 0.05f;
 
 } }
