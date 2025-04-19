@@ -4,6 +4,7 @@
         <relationships>
             <relation npc="Bravo" value="100"/>
             <relation npc="Delta" value="10"/>
+            <relation npc="Echo" value="100"/>
         </relationships>
     </NPC>
     <NPC name="Bravo">
@@ -15,11 +16,18 @@
     <NPC name="Charlie">
         <relationships>
             <relation npc="Bravo" value="-50"/>
+            <relation npc="Echo" value="-100"/>
         </relationships>
     </NPC>
     <NPC name="Delta">
         <relationships>
             <relation npc="Alpha" value="10"/>
+        </relationships>
+    </NPC>
+    <NPC name="Echo">
+        <relationships>
+            <relation npc="Alpha" value="100"/>
+            <relation npc="Charlie" value="-100"/>
         </relationships>
     </NPC>
 </listOfNPC>

@@ -26,19 +26,42 @@ namespace GS { namespace npc {
 	{
 	}
 
+	void NPC::setColour(const daedalusCore::maths::vec4& colour)
+	{
+		m_renderProperties.colour = colour;
+	}
+
 	void NPC::render()
 	{
 		daedalusCore::graphics::Renderer2D::drawQuad(m_renderProperties);
 	}
 
-	void NPC::renderRelations(void* sl)
+	void NPC::setRelationColours(const SimLayer* const sl, bool revertToDefault)
+	{
+		if (revertToDefault)
+			this->setColour({ 1,1,1,1 });
+		else
+			this->setColour({ 0.8f, 0.8f, 0.8f, 0.8f });
+
+		for (const auto& npcRel : m_relationMap)
+		{
+			//This const_cast is a little goffy but its how i can get around findNPC returning a const ref
+
+			if (revertToDefault)
+				const_cast<NPC&>(sl->findNPC(npcRel.first)).setColour({1, 1, 1, 1});
+			else
+				const_cast<NPC&>(sl->findNPC(npcRel.first)).setColour(npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour);
+		}
+	}
+
+	void NPC::renderRelations(const SimLayer* const sl)
 	{
 		DD_LOG_TRACE("Rendering {} relations", m_name);
 
 		for (const auto& npcRel : m_relationMap)
 		{
 			daedalusCore::maths::vec2 asVec2Pos = { m_renderProperties.position.x, m_renderProperties.position.y };
-			const GS::npc::NPC& otherNPC = ((SimLayer*)sl)->findNPC(npcRel.first);
+			const GS::npc::NPC& otherNPC = sl->findNPC(npcRel.first);
 
 			if (otherNPC.getName() == "NULL")
 				continue;
@@ -56,6 +79,8 @@ namespace GS { namespace npc {
 				});
 		}
 	}
+
+	
 
 	static int clamp_relation_value(int val)
 	{

@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <Daedalus.h>
 
+class SimLayer;
+
 namespace GS { namespace npc {
 
 	class NPC
@@ -15,12 +17,21 @@ namespace GS { namespace npc {
 
 		void tick();
 
+		void setColour(const daedalusCore::maths::vec4& colour);
+
 		void render();
+
+		void setRelationColours(const SimLayer* const sl, bool revertToDefault = false);
 
 		/* I have passed as a void* even though it will be cast to a SimLayer*
 		 this is to avoid having to include simulationAppLayer.h in this file
-		 i could pre declare the class, which should be changed if this works */
-		void renderRelations(void* sl);
+		 i could pre declare the class, which should be changed if this works 
+
+		   this function is really buggy - if hovering over NPC 1 or NPC 2
+		   then if you move NPC 4 it will be renderer 2 times.
+		   The angles between the nodes is also being calculated incorrecly
+		   so the links between nodes arent alreays correctly represented*/
+		void renderRelations(const SimLayer* const sl);
 
 		inline std::string getName() const { return m_name; }
 

@@ -78,36 +78,40 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 
 		if (m_mouseInBoundsThisFrame)
 			continue;
-		
 
 		if (npc.inPointInBounds(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition())))
 		{
+			if (m_hoveredNPC && m_hoveredNPC != &npc)
+				m_hoveredNPC->setRelationColours(this, true);
+
 			m_mouseInBoundsThisFrame = true;
 			m_hoveredNPC = &npc;
 		}
 	}
+
+	//set colour for relations
+#if 1
+
+	if (m_mouseInBoundsThisFrame)
+		m_hoveredNPC->setRelationColours(this);
+
+	if (!m_mouseInBoundsThisFrame && m_hoveredNPC)
+	{
+		m_hoveredNPC->setRelationColours(this, true);
+		m_hoveredNPC = nullptr;
+	}
+
+#endif
 
 	if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
 	{
 		m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
 	}
 
-#ifndef DD_DISTRO
-	daedalusCore::graphics::Renderer2D::resetStats();
-#endif
 	daedalusCore::graphics::RenderCommands::setClearColour(daedalusCore::utils::colour_vec4_to_normalized_vec4({ 36,36,36,255 }));
 	daedalusCore::graphics::RenderCommands::clear();
 
 	daedalusCore::graphics::Renderer2D::begin(m_camController.getCamera());
-	
-	if (m_mouseInBoundsThisFrame)
-	{
-		/*this function is really buggy - if hovering over NPC 1 or NPC 2
-		  then if you move NPC 4 it will be renderer 2 times. 
-		  The angles between the nodes is also being calculated incorrecly 
-		  so the links between nodes arent alreays correctly represented*/
-		m_hoveredNPC->renderRelations(this);
-	}
 
 	for (auto& npc : m_npcVec)
 		npc.render();
@@ -117,19 +121,6 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 
 void SimLayer::imGuiRender()
 {
-#ifndef DD_DISTRO
-	ImGui::Begin("Settings");
-
-	auto stats = daedalusCore::graphics::Renderer2D::getStats();
-	ImGui::Text("Renderer2D Stats:");
-	ImGui::Text("Draw calls: %d", stats.drawCalls);
-	ImGui::Text("Quads: %d", stats.quadCount);
-	ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
-	ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-
-	ImGui::End();
-#endif
-
 	ImGui::Begin("NPC Details");
 	if (m_mouseInBoundsThisFrame)
 	{
