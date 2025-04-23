@@ -1,7 +1,7 @@
 #pragma once
 #include <Daedalus.h>
-#include <vector>
-#include "npc/npc.h"
+
+#include "npc/npcManager.h"
 #include "gossip/gossipManager.h"
 
 class SimLayer : public daedalusCore::application::Layer
@@ -15,12 +15,10 @@ public:
 	void imGuiRender() override;
 	void onEvent(daedalusCore::event::Event& e) override;
 
-	const GS::npc::NPC& findNPC(const std::string& name) const;
-
 private:
 	daedalusCore::graphics::OrthographicCameraController m_camController;
 
-	std::vector<GS::npc::NPC> m_npcVec;
+	GS::npc::NPCManager m_npcManager;
 	GS::gossip::GossipManager m_gossipManager;
 
 	bool m_mouseInBoundsThisFrame = false;

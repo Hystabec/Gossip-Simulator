@@ -6,7 +6,7 @@
 
 class SimLayer;
 
-namespace GS { namespace npc {
+namespace GS::npc {
 
 	class NPC
 	{
@@ -21,7 +21,7 @@ namespace GS { namespace npc {
 
 		void render();
 
-		void setRelationColours(const SimLayer* const sl, bool revertToDefault = false);
+		void setRelationColours(bool revertToDefault = false);
 
 		/* I have passed as a void* even though it will be cast to a SimLayer*
 		 this is to avoid having to include simulationAppLayer.h in this file
@@ -31,7 +31,7 @@ namespace GS { namespace npc {
 		   then if you move NPC 4 it will be renderer 2 times.
 		   The angles between the nodes is also being calculated incorrecly
 		   so the links between nodes arent alreays correctly represented*/
-		void renderRelations(const SimLayer* const sl);
+		void renderRelations();
 
 		inline std::string getName() const { return m_name; }
 
@@ -71,4 +71,4 @@ namespace GS { namespace npc {
 	const daedalusCore::maths::vec4 positiveRelationColour = { 0.2f, 0.8f, 0.2f, 1.0f };
 	const float relationLineWidth = 0.05f;
 
-} }
+}
