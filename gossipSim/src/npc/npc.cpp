@@ -10,17 +10,19 @@ namespace GS::npc {
 	NPC::NPC()
 		: m_name("NULL")
 	{
+		DD_LOG_INFO("NPC ({}) constucted", m_name);
 	}
 
 	NPC::NPC(const std::string& name, const daedalusCore::graphics::primatives2D::QuadProperties& renderProp)
 		: m_name(name), m_renderProperties(renderProp)
 	{
+		DD_LOG_INFO("NPC ({}) constucted", m_name);
 	}
 
 	NPC::~NPC()
 	{
 		//Here to check object is being destroyed
-		DD_LOG_INFO("NPC: {} destroyed", m_name);
+		DD_LOG_INFO("NPC: ({}) destroyed", m_name);
 	}
 
 	void NPC::tick()

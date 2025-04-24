@@ -20,6 +20,7 @@ private:
 
 	GS::npc::NPCManager m_npcManager;
 	GS::gossip::GossipManager m_gossipManager;
+	uint32_t m_selectedGossip = 0;
 
 	bool m_mouseInBoundsThisFrame = false;
 	GS::npc::NPC* m_hoveredNPC = nullptr;

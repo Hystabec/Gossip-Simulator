@@ -30,8 +30,6 @@ namespace GS::npc {
 		int npcCount = 0;
 		for (pugi::xml_node node_NPC : npcDoc.child("listOfNPC"))
 		{
-			DD_LOG_INFO("NPC ({}) constucted", node_NPC.attribute("name").as_string());
-
 			quadProps.position = { (float)npcX + -1.0f, (float)-npcY + 0.75f, (float)npcCount * 0.01f };
 
 			m_npcVec.emplace_back(node_NPC.attribute("name").as_string(), quadProps);
