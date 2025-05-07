@@ -1,11 +1,21 @@
 # Gossip-Simulator
 
-## How to install
-Run cloneSubModules.bat to clone any required git submodules (Requires Git to be installed).
-Run GenerateProject_VS22.bat to generate visual studio 2022 project files.
-Open in visual studio 2022 then Build project.
-The project should then be able to be run.
+## Installation
 
-### If git is not installed
-Manual cloning of submodules will be required.
-View .gitmodules to see the url for the required modules and the path to put the cloned module into.
+### Install with Git
+```bash
+git clone https://github.com/Hystabec/Gossip-Simulator
+cd Gossip-Simulator
+git submodule update --init --recursive
+```
+
+### Install manually
+Download project files.
+Download Submodules:
+- submodule URLs and Paths can be found in `.gitmodules`
+
+### Building project files for Visual Studio 2022
+Once the repository has been cloned.
+Run `GenerateProject_VS22.bat` to generate visual studio 2022 project files. 
+Open in visual studio 2022 then Build project.
+The project can then be ran.
