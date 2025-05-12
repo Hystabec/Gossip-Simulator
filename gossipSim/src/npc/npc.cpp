@@ -30,9 +30,18 @@ namespace GS::npc {
 	{
 		if (m_storedGossip != 0 && m_relationMap.size() > 0)
 		{
-			auto& firstRelation = NPCManager::get().findNPC(m_relationMap.begin()->first);
+			DD_LOG_TRACE("{} started telling gossip", m_name);
+
+			for (auto& npcRel : m_relationMap)
+			{
+				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
+				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), m_storedGossip);
+				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossip);
+			}
+
+			/*auto& firstRelation = NPCManager::get().findNPC(m_relationMap.begin()->first);
 			DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, firstRelation.getName(), m_storedGossip);
-			const_cast<NPC&>(firstRelation).listenToGossip(m_storedGossip);
+			const_cast<NPC&>(firstRelation).listenToGossip(m_storedGossip);*/
 
 			m_storedGossip = 0;
 		}
