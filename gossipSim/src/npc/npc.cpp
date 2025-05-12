@@ -4,29 +4,36 @@
 #include "../simulationAppLayer.h"
 #include "../mathsUtils/vec2Utils.h"
 #include "npcManager.h"
+#include "../gossip/gossipManager.h"
 
 namespace GS::npc {
 
 	NPC::NPC()
 		: m_name("NULL")
 	{
-		DD_LOG_INFO("NPC ({}) constucted", m_name);
+		//DD_LOG_INFO("NPC ({}) constucted", m_name);
 	}
 
 	NPC::NPC(const std::string& name, const daedalusCore::graphics::primatives2D::QuadProperties& renderProp)
 		: m_name(name), m_renderProperties(renderProp)
 	{
-		DD_LOG_INFO("NPC ({}) constucted", m_name);
+		//DD_LOG_INFO("NPC ({}) constucted", m_name);
 	}
 
 	NPC::~NPC()
 	{
 		//Here to check object is being destroyed
-		DD_LOG_INFO("NPC: ({}) destroyed", m_name);
+		//DD_LOG_INFO("NPC: ({}) destroyed", m_name);
 	}
 
 	void NPC::tick()
 	{
+		if (m_storedGossip != 0 && m_relationMap.size() > 0)
+		{
+			auto& firstRelation = NPCManager::get().findNPC(m_relationMap.begin()->first);
+			const_cast<NPC&>(firstRelation).listenToGossip(m_storedGossip);
+			DD_LOG_INFO("{} told {} about [gossipID]{}", m_name, firstRelation.getName(), m_storedGossip);
+		}
 	}
 
 	void NPC::setColour(const daedalusCore::maths::vec4& colour)
@@ -81,9 +88,34 @@ namespace GS::npc {
 					npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour
 				});
 		}
-	}
+	}	
 
-	
+	void NPC::listenToGossip(uint32_t gossipID)
+	{
+		gossip::GossipManager::get().registerGossipListener(gossipID, this);
+
+		gossip::Gossip gossipInstance = gossip::GossipManager::get().getGossipFromID(gossipID);
+
+		// "The gossip is about me, so ill ignore it"
+		if (gossipInstance.aboutNPC == m_name)
+			return;
+
+		auto asRelation = m_relationMap.find(gossipInstance.aboutNPC);
+		if (asRelation != m_relationMap.end())
+		{
+			if (asRelation->second > 0) // "The gossip is about someone i like, so ill ignore it"
+				return;
+			else if (asRelation->second == 0) // "The gossip is about someone i dont have an opinion, so ill ignore it"
+				return;
+			else // "The gossip is about someone i dont like so ill remeber it"
+			{
+				m_storedGossip = gossipID;
+			}
+		}
+
+		// "The gossip is about someone i dont know, so ill ignore it"
+		return;
+	}
 
 	static int clamp_relation_value(int val)
 	{

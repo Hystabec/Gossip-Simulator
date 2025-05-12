@@ -25,7 +25,8 @@ SimLayer::SimLayer()
 
 void SimLayer::attach()
 {
-	m_gossipManager.createGossip(GS::gossip::GossipType::neutral, "Bravo", m_npcManager.findNPC("Echo"));
+	const GS::npc::NPC& npcFound = m_npcManager.findNPC("Echo");
+	const_cast<GS::npc::NPC&>(npcFound).storeGossip(m_gossipManager.createGossip(GS::gossip::GossipType::neutral, "Bravo", npcFound));
 }
 
 void SimLayer::detach()
