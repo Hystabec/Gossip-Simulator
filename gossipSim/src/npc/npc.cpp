@@ -31,8 +31,10 @@ namespace GS::npc {
 		if (m_storedGossip != 0 && m_relationMap.size() > 0)
 		{
 			auto& firstRelation = NPCManager::get().findNPC(m_relationMap.begin()->first);
+			DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, firstRelation.getName(), m_storedGossip);
 			const_cast<NPC&>(firstRelation).listenToGossip(m_storedGossip);
-			DD_LOG_INFO("{} told {} about [gossipID]{}", m_name, firstRelation.getName(), m_storedGossip);
+
+			m_storedGossip = 0;
 		}
 	}
 
@@ -98,22 +100,34 @@ namespace GS::npc {
 
 		// "The gossip is about me, so ill ignore it"
 		if (gossipInstance.aboutNPC == m_name)
+		{
+			DD_LOG_INFO("{} ignored gossip about {} | reason = 'about me' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 			return;
+		}
 
 		auto asRelation = m_relationMap.find(gossipInstance.aboutNPC);
 		if (asRelation != m_relationMap.end())
 		{
 			if (asRelation->second > 0) // "The gossip is about someone i like, so ill ignore it"
+			{
+				DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 				return;
+			}
 			else if (asRelation->second == 0) // "The gossip is about someone i dont have an opinion, so ill ignore it"
+			{
+				DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i dont have an opinion of' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 				return;
+			}
 			else // "The gossip is about someone i dont like so ill remeber it"
 			{
 				m_storedGossip = gossipID;
+				DD_LOG_INFO("{} remembered gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+				return;
 			}
 		}
 
 		// "The gossip is about someone i dont know, so ill ignore it"
+		DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i dont know' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 		return;
 	}
 
