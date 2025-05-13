@@ -1,15 +1,19 @@
 #pragma once
 
 #include <string>
+#include <string>
 
 namespace GS { namespace gossip {
 
 	enum class GossipType
 	{
-		//positive,
+		positive,
 		negative,
 		neutral
 	};
+
+	GossipType string_to_gossip_type(const std::string& str);
+	std::string gossip_to_string(const GossipType& gossipType);
 
 	struct Gossip
 	{

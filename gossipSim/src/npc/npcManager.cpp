@@ -21,7 +21,7 @@ namespace GS::npc {
 		pugi::xml_parse_result result = npcDoc.load_file(npcFile.c_str());
 
 		if (!result)
-			DD_ASSERT(false, "Couldnt find NPC_Data.xml");
+			DD_ASSERT(false, DD_ASSERT_FORMAT_MESSAGE("Couldnt find {}", npcFile));
 
 		m_npcVec.reserve(std::distance(npcDoc.child("listOfNPC").begin(), npcDoc.child("listOfNPC").end()));
 

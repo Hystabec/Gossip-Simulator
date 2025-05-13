@@ -2,10 +2,12 @@
 
 #include <memory>
 #include <unordered_map>
+#include <set>
 #include <vector>
 
 #include "../npc/npc.h"
 #include "gossip.h"
+#include "preGossip.h"
 
 namespace GS { namespace gossip {
 
@@ -16,6 +18,10 @@ namespace GS { namespace gossip {
 		~GossipManager();
 
 		inline static GossipManager& get() { return *s_instance; }
+
+		void tick(uint32_t currentTick);
+
+		void readGossipDataFile(const std::string& fileLoc);
 
 		uint32_t createGossip(GossipType type, const std::string& about, const npc::NPC& npcToStartFrom);
 		void registerGossipListener(uint32_t gossipID, const npc::NPC* listener);
@@ -29,6 +35,7 @@ namespace GS { namespace gossip {
 
 		std::unordered_map<uint32_t, std::vector<const npc::NPC*>> m_activeGossipMap;
 		std::vector<Gossip> m_activeGossips;
+		std::set<PreGossip> m_gossipEvents;
 	};
 
 } }

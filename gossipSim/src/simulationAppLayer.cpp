@@ -17,16 +17,18 @@
 
 #define COLOUR_RELATIONS 1
 #define USE_TEST_GOSSIP 1
+#define TICK_ONCE_SECOND 1
 
 SimLayer::SimLayer()
 	: m_camController(1280.0f / 720.0f), m_npcManager("NPC_Data.xml")
 {
+	m_gossipManager.readGossipDataFile("Gossip_Data.xml");
 }
 
 void SimLayer::attach()
 {
-	const GS::npc::NPC& npcFound = m_npcManager.findNPC("Echo");
-	const_cast<GS::npc::NPC&>(npcFound).storeGossip(m_gossipManager.createGossip(GS::gossip::GossipType::neutral, "Bravo", npcFound));
+	//const GS::npc::NPC& npcFound = m_npcManager.findNPC("Echo");
+	//const_cast<GS::npc::NPC&>(npcFound).storeGossip(m_gossipManager.createGossip(GS::gossip::GossipType::negative, "Bravo", npcFound));
 }
 
 void SimLayer::detach()
@@ -35,12 +37,24 @@ void SimLayer::detach()
 
 void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 {
+	static float updateTime = 0.0f;
+	updateTime += dt.getSeconds();
+
 	m_mouseInBoundsThisFrame = false;
 	m_camController.update(dt);
 
+	m_gossipManager.tick(m_numNPCTicks);
+
 	for (auto& npc : m_npcManager.getNPCVec())
 	{
-		npc.tick();
+#if TICK_ONCE_SECOND
+		if (updateTime >= 1.0f)
+		{
+			npc.tick();
+		}
+#else
+		npc.tick():
+#endif
 		//check if mouse is hovering an NPCs
 
 		if (m_mouseInBoundsThisFrame)
@@ -55,6 +69,16 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 			m_hoveredNPC = &npc;
 		}
 	}
+
+#if TICK_ONCE_SECOND
+	if (updateTime >= 1.0f)
+	{
+		m_numNPCTicks++;
+		updateTime = 0.0f;
+	}
+#else
+	m_numNPCTicks++;
+#endif
 
 	//set colour for relations
 #if COLOUR_RELATIONS
@@ -98,6 +122,10 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 void SimLayer::imGuiRender()
 {
 	ImGui::Begin("NPC Details");
+	char tickBuff[50];
+	sprintf_s(tickBuff, "NPCs ticked %i time(s)", m_numNPCTicks);
+	ImGui::Text(tickBuff);
+	ImGui::Separator();
 	if (m_mouseInBoundsThisFrame)
 	{
 		m_hoveredNPC->displayDataToImGui();
@@ -114,9 +142,9 @@ void SimLayer::imGuiRender()
 	{
 		char buff[50];
 		if (i == 0)
-			sprintf(buff, "None");
+			sprintf_s(buff, "None");
 		else
-			sprintf(buff, "Gossip: %i", i);
+			sprintf_s(buff, "Gossip: %i", i);
 
 		if (ImGui::Selectable(buff, m_selectedGossip == i) && i != m_selectedGossip)
 		{

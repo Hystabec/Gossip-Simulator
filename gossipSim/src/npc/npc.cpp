@@ -34,6 +34,9 @@ namespace GS::npc {
 
 			for (auto& npcRel : m_relationMap)
 			{
+				if (npcRel.second < 1)
+					continue;
+
 				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
 				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), m_storedGossip);
 				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossip);
