@@ -41,6 +41,7 @@
         </relationships>
     </NPC>
     <NPC name="Echo">
+        <personality type="sink"/>
         <relationships>
             <relation npc="Delta" value="10"/>
             <relation npc="Foxtrot" value="10"/>
@@ -91,6 +92,7 @@
         </relationships>
     </NPC>
     <NPC name="Juliett">
+        <personality type="spreader"/>
         <relationships>
             <relation npc="Charlie" value="10"/>
             <relation npc="Echo" value="10"/>

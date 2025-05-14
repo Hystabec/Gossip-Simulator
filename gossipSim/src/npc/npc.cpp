@@ -28,6 +28,9 @@ namespace GS::npc {
 
 	void NPC::tick()
 	{
+		if (m_personality == personality::gossipSink) // gossip sinks - like hearing gossip but dont tell it
+			return;
+
 		if (!m_toldRecentGossip && m_relationMap.size() > 0)
 		{
 			DD_LOG_TRACE("{} started telling gossip", m_name);
@@ -36,7 +39,7 @@ namespace GS::npc {
 
 			for (auto& npcRel : m_relationMap)
 			{
-				if (npcRel.second < 1)
+				if (npcRel.second < 1 && m_personality != personality::gossipSpreader) // gossip spreaders will tell everyone they know not just people they like
 					continue;
 
 				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
@@ -135,6 +138,22 @@ namespace GS::npc {
 			DD_LOG_INFO("{} ignored gossip about {} | reason = 'about me' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 			return;
 		}
+
+		if (m_personality == personality::gossipSink)
+		{
+			m_storedGossips.push_front(gossipID);
+			m_toldRecentGossip = false;
+			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip sink' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
+			return;
+		}
+		else if (m_personality == personality::gossipSpreader)
+		{
+			m_storedGossips.push_front(gossipID);
+			m_toldRecentGossip = false;
+			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip spreader' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
+			return;
+		}
+
 
 		auto asRelation = m_relationMap.find(gossipInstance.aboutNPC);
 		if (asRelation != m_relationMap.end())

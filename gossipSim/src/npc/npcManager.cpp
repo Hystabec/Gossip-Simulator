@@ -35,6 +35,10 @@ namespace GS::npc {
 			m_npcVec.emplace_back(node_NPC.attribute("name").as_string(), quadProps);
 			GS::npc::NPC& curNPC = m_npcVec.back();
 
+			auto personalityNode = node_NPC.child("personality");
+			if (personalityNode)
+				curNPC.setPersonality(string_to_personality(personalityNode.attribute("type").as_string()));
+
 			//parseNodeFiles - generate relationships
 			for (pugi::xml_node node_relation : node_NPC.child("relationships"))
 				curNPC.addRelation(node_relation.attribute("npc").as_string(), node_relation.attribute("value").as_int());

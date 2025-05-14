@@ -11,6 +11,23 @@
 
 namespace GS::npc {
 
+	enum class personality
+	{
+		gossipSpreader,
+		gossipSink,
+		standard
+	};
+
+	inline personality string_to_personality(const std::string& str)
+	{
+		if (str == "spreader")
+			return personality::gossipSpreader;
+		else if (str == "sink")
+			return personality::gossipSink;
+		else
+			return personality::standard;
+	}
+
 	class NPC
 	{
 	public:
@@ -19,6 +36,8 @@ namespace GS::npc {
 		~NPC();
 
 		void tick();
+
+		inline void setPersonality(personality newPersonality) { m_personality = newPersonality; }
 
 		void setColour(const daedalusCore::maths::vec4& colour);
 
@@ -40,7 +59,7 @@ namespace GS::npc {
 
 		void listenToGossip(uint32_t gossipID);
 
-		void storeGossip(uint32_t gossipID) { m_storedGossips.push_front(gossipID); m_toldRecentGossip = false; }
+		inline void storeGossip(uint32_t gossipID) { m_storedGossips.push_front(gossipID); m_toldRecentGossip = false; }
 
 		operator std::string() { return m_name; }
 
@@ -70,6 +89,7 @@ namespace GS::npc {
 
 	private:
 		std::string m_name;
+		personality m_personality = personality::standard;
 		std::unordered_map<std::string, int> m_relationMap;
 		daedalusCore::graphics::primatives2D::QuadProperties m_renderProperties;
 
