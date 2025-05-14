@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <listOfGossipEvents>
-    <Event type="negative" about="Bravo" startingFrom="Echo" startTick="0"/>
-    <Event type="neutral" about="Alpha" startingFrom="Delta" startTick="10"/>
+    <Event type="positive" about="Bravo" startingFrom="Alpha" startTick="0"/>
+    <Event type="negative" about="Alpha" startingFrom="Delta" startTick="10"/>
+    <Event type="neutral" about="Hotel" startingFrom="Golf" startTick="20"/>
 </listOfGossipEvents>

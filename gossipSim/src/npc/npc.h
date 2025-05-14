@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include <Daedalus.h>
+#include <forward_list>
 
 #include "../gossip/gossip.h"
 
@@ -18,7 +19,6 @@ namespace GS::npc {
 		~NPC();
 
 		void tick();
-
 
 		void setColour(const daedalusCore::maths::vec4& colour);
 
@@ -40,7 +40,7 @@ namespace GS::npc {
 
 		void listenToGossip(uint32_t gossipID);
 
-		void storeGossip(uint32_t gossipID) { m_storedGossip = gossipID; }
+		void storeGossip(uint32_t gossipID) { m_storedGossips.push_front(gossipID); m_toldRecentGossip = false; }
 
 		operator std::string() { return m_name; }
 
@@ -73,7 +73,8 @@ namespace GS::npc {
 		std::unordered_map<std::string, int> m_relationMap;
 		daedalusCore::graphics::primatives2D::QuadProperties m_renderProperties;
 
-		uint32_t m_storedGossip = 0;
+		std::forward_list<uint32_t> m_storedGossips;
+		bool m_toldRecentGossip = true;
 	};
 
 	const daedalusCore::maths::vec4 negativeRelationColour = { 0.8f, 0.2f, 0.2f, 1.0f };

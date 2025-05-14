@@ -28,9 +28,11 @@ namespace GS::npc {
 
 	void NPC::tick()
 	{
-		if (m_storedGossip != 0 && m_relationMap.size() > 0)
+		if (!m_toldRecentGossip && m_relationMap.size() > 0)
 		{
 			DD_LOG_TRACE("{} started telling gossip", m_name);
+
+			gossip::Gossip storedGossip = gossip::GossipManager::get().getGossipFromID(m_storedGossips.front());
 
 			for (auto& npcRel : m_relationMap)
 			{
@@ -38,15 +40,11 @@ namespace GS::npc {
 					continue;
 
 				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
-				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), m_storedGossip);
-				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossip);
+				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), m_storedGossips.front());
+				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossips.front());
 			}
 
-			/*auto& firstRelation = NPCManager::get().findNPC(m_relationMap.begin()->first);
-			DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, firstRelation.getName(), m_storedGossip);
-			const_cast<NPC&>(firstRelation).listenToGossip(m_storedGossip);*/
-
-			m_storedGossip = 0;
+			m_toldRecentGossip = true;
 		}
 	}
 
@@ -104,11 +102,32 @@ namespace GS::npc {
 		}
 	}	
 
+	bool foward_list_contains(const std::forward_list<uint32_t>& fl, uint32_t toSearchFor)
+	{
+		// TO DO: this is O(n) time could probably be optimized using set/u_set
+		// if preformance becomes an issue check this
+
+		for (auto i : fl)
+		{
+			if (i == toSearchFor)
+				return true;
+		}
+
+		return false;
+	}
+
 	void NPC::listenToGossip(uint32_t gossipID)
 	{
 		gossip::GossipManager::get().registerGossipListener(gossipID, this);
 
 		gossip::Gossip gossipInstance = gossip::GossipManager::get().getGossipFromID(gossipID);
+
+		//already heard and process gossips (stops looping)
+		if (foward_list_contains(m_storedGossips, gossipID))
+		{
+			DD_LOG_INFO("{} ignored gossip about {} | reason = 'already heard it' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+			return;
+		}
 
 		// "The gossip is about me, so ill ignore it"
 		if (gossipInstance.aboutNPC == m_name)
@@ -120,26 +139,53 @@ namespace GS::npc {
 		auto asRelation = m_relationMap.find(gossipInstance.aboutNPC);
 		if (asRelation != m_relationMap.end())
 		{
-			if (asRelation->second > 0) // "The gossip is about someone i like, so ill ignore it"
+			if (asRelation->second > 0) // "The gossip is about someone i like"
 			{
-				DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
-				return;
+				if (gossipInstance.type != gossip::GossipType::negative)
+				{
+					// "positive or neutral gossip about someone i like - ill remeber it"
+
+					m_storedGossips.push_front(gossipID);
+					m_toldRecentGossip = false;
+					DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
+					return;
+				}
+				else
+				{
+					// "negative gossip about someone i like - ill ignore it"
+
+					DD_LOG_INFO("{} ignored negative gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+					return;
+				}
 			}
-			else if (asRelation->second == 0) // "The gossip is about someone i dont have an opinion, so ill ignore it"
+			else if (asRelation->second < 0) // "The gossip is about someone i dont like so ill remeber it"
 			{
-				DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i dont have an opinion of' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
-				return;
+				if (gossipInstance.type == gossip::GossipType::negative)
+				{
+					// "negative gossip about someone i dont like - ill remeber it"
+
+					m_storedGossips.push_front(gossipID);
+					m_toldRecentGossip = false;
+					DD_LOG_INFO("{} remembered negative gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+					return;
+				}
+				else
+				{
+					// "positive or neutral gossip about someone i dont like - ill ignore it"
+
+					DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
+					return;
+				}
 			}
-			else // "The gossip is about someone i dont like so ill remeber it"
+			else // "The gossip is about someone i dont have an opinion, so ill ignore it"
 			{
-				m_storedGossip = gossipID;
-				DD_LOG_INFO("{} remembered gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+				DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont have an opinion of' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
 				return;
 			}
 		}
 
 		// "The gossip is about someone i dont know, so ill ignore it"
-		DD_LOG_INFO("{} ignored gossip about {} | reason = 'about someone i dont know' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
+		DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont know' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
 		return;
 	}
 
