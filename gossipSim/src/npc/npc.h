@@ -95,6 +95,7 @@ namespace GS::npc {
 
 		std::forward_list<uint32_t> m_storedGossips;
 		bool m_toldRecentGossip = true;
+		bool m_toldGossipThisTick = false;
 	};
 
 	const daedalusCore::maths::vec4 negativeRelationColour = { 0.8f, 0.2f, 0.2f, 1.0f };

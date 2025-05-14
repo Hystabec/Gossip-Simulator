@@ -18,6 +18,8 @@ public:
 private:
 	daedalusCore::graphics::OrthographicCameraController m_camController;
 
+
+	float secondsBetweenNPCUpdates = 2.0f;
 	GS::npc::NPCManager m_npcManager;
 	GS::gossip::GossipManager m_gossipManager;
 	uint32_t m_selectedGossip = 0;

@@ -28,6 +28,13 @@ namespace GS::npc {
 
 	void NPC::tick()
 	{
+		// this is here so all gossip ticks dont mostly happen on one tick
+		if (m_toldGossipThisTick)
+		{
+			m_toldGossipThisTick = false;
+			return;
+		}
+
 		if (m_personality == personality::gossipSink) // gossip sinks - like hearing gossip but dont tell it
 			return;
 
@@ -143,6 +150,7 @@ namespace GS::npc {
 		{
 			m_storedGossips.push_front(gossipID);
 			m_toldRecentGossip = false;
+			m_toldGossipThisTick = true;
 			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip sink' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
 			return;
 		}
@@ -150,6 +158,7 @@ namespace GS::npc {
 		{
 			m_storedGossips.push_front(gossipID);
 			m_toldRecentGossip = false;
+			m_toldGossipThisTick = true;
 			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip spreader' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
 			return;
 		}
@@ -166,6 +175,7 @@ namespace GS::npc {
 
 					m_storedGossips.push_front(gossipID);
 					m_toldRecentGossip = false;
+					m_toldGossipThisTick = true;
 					DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipID);
 					return;
 				}
@@ -185,6 +195,7 @@ namespace GS::npc {
 
 					m_storedGossips.push_front(gossipID);
 					m_toldRecentGossip = false;
+					m_toldGossipThisTick = true;
 					DD_LOG_INFO("{} remembered negative gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipID);
 					return;
 				}

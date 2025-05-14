@@ -48,7 +48,7 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	for (auto& npc : m_npcManager.getNPCVec())
 	{
 #if TICK_ONCE_SECOND
-		if (updateTime >= 1.0f)
+		if (updateTime >= secondsBetweenNPCUpdates)
 		{
 			npc.tick();
 		}
@@ -71,7 +71,7 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	}
 
 #if TICK_ONCE_SECOND
-	if (updateTime >= 1.0f)
+	if (updateTime >= secondsBetweenNPCUpdates)
 	{
 		m_numNPCTicks++;
 		updateTime = 0.0f;
