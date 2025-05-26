@@ -1,7 +1,7 @@
 # Gossip-Simulator
 
-NPC data can be viewed/Edited in the `NPC_Data.xml` file
-Gossip events can be viewed/Edited in the `Gossip_Data.xml` file
+NPC data can be viewed/Edited in the `NPC_Data.xml` file  
+Gossip events can be viewed/Edited in the `Gossip_Data.xml` file  
 
 
 ## Installation
