@@ -7,6 +7,8 @@ namespace GS::npc {
 
 	NPCManager* NPCManager::s_instance = nullptr;
 
+	static uint32_t npcPerRow = 4;
+
 	NPCManager::NPCManager(const std::string& npcFile)
 	{
 		DD_ASSERT(!s_instance, "Duplicate NPCManager");
@@ -44,7 +46,7 @@ namespace GS::npc {
 				curNPC.addRelation(node_relation.attribute("npc").as_string(), node_relation.attribute("value").as_int());
 
 			npcX++;
-			if (npcX >= 3)
+			if (npcX >= npcPerRow)
 			{
 				npcX = 0;
 				npcY++;

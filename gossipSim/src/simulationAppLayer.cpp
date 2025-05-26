@@ -23,6 +23,8 @@ SimLayer::SimLayer()
 	: m_camController(1280.0f / 720.0f), m_npcManager("NPC_Data.xml")
 {
 	m_gossipManager.readGossipDataFile("Gossip_Data.xml");
+	m_camController.setPosition({ 1.1f, -0.3f, 0.0f });
+	m_camController.setZoomLevel(1.5f);
 }
 
 void SimLayer::attach()
