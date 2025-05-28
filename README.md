@@ -1,6 +1,7 @@
 # Gossip-Simulator
 
 Only `Windows` is supported.  
+Compiled program can be found on the [Release Tab](https://github.com/Hystabec/Gossip-Simulator/releases)  
 
 ## Simulation Description
 The simulation start as soon as the `gossipSim` program is executed.  
@@ -18,15 +19,15 @@ if the gossip is negative AND about an NPC they dislike, they will tell all the 
 When hearing gossip the NPC will choose to `Remember` or `ignore` it.  
 
 NPCs with `no specified personality` will follow these rules:  
-NPCs will always ignore gossip about themselves.  
-NPCs will also ignore gossip about NPCs they don't know.  
-This table shows the outcome of gossip type when about known NPCs:  
-| About NPC relation | Gossip type | Outcome  |  
-| ------------------ | ----------- | -------- |  
-| Positive           | Positive    | Remember |  
-| Positive           | Negative    | Ignore   |  
-| Negative           | Positive    | Ignore   |  
-| Negative           | Negative    | Remember |  
+1. NPCs will always ignore gossip about themselves.  
+2. NPCs will also ignore gossip about NPCs they don't know.  
+3. The table below shows the outcome of the gossip, when about known NPCs:  
+| About NPC relation is | Gossip type is | Outcome  |  
+| --------------------- | -------------- | -------- |  
+| Positive              | Positive       | Remember |  
+| Positive              | Negative       | Ignore   |  
+| Negative              | Positive       | Ignore   |  
+| Negative              | Negative       | Remember |  
 
 NPCs can have a `personality` which can be either of the following: `Spreader` or `Sink`.  
 NPCs with the `Spreader` personality will listen to and spread all gossip as long as the gossip is not about them.  
@@ -114,7 +115,7 @@ Example:
 ```
 
 
-## Installation
+## Installation (Uncompiled Project)
 
 ### Install with Git
 ```bash
