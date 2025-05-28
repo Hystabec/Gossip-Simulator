@@ -284,7 +284,7 @@ namespace GS::npc {
 		ImGui::Text("NPC Name: %s", m_name.c_str());
 		ImGui::SeparatorText("Relations");
 		for (auto relation : m_relationMap)
-			ImGui::Text("NPC: %s, Value: %i", relation.first.c_str(), relation.second);
+			ImGui::Text("NPC: %s, Relation: %s", relation.first.c_str(), relation.second > 0 ? "positive" : "negative");
 	}
 
 	bool NPC::npcExsitsInMap(const std::string& npc)

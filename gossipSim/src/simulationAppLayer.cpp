@@ -128,7 +128,9 @@ void SimLayer::imGuiRender()
 	ImGui::Begin("NPC Details");
 	char tickBuff[50];
 	sprintf_s(tickBuff, "NPCs ticked %i time(s)", m_numNPCTicks);
+
 	ImGui::Text(tickBuff);
+
 	ImGui::Separator();
 	if (m_mouseInBoundsThisFrame)
 	{
