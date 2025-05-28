@@ -3,6 +3,10 @@
 Only `Windows` is supported.  
 Compiled program can be found on the [Release Tab](https://github.com/Hystabec/Gossip-Simulator/releases)  
 
+The project contains 2 application `gossipSim` and `gossipSim-nodeEditor`.  
+`gossipSim` is the main application that runs the simulator.  
+`gossipSim-nodeEditor` is a helper program that allows the user to view the XML files (`NPC_Data.xml`, `Gossip_Data.xml`) with a GUI.  
+
 ## Simulation Description
 The simulation start as soon as the `gossipSim` program is executed.  
 The number of NPCs and their relationships is defined in `NPC_Data.xml`.  
@@ -69,7 +73,7 @@ When executed the user will need to open an XML file `File -> Open`.
 Select either `NPC_Data.xml` OR `Gossip_Data.xml`.  
 If the `NPC file was opened`, select an NPC from the `NPC List` panel the view the details about the NPC.  
 If the `gossip file was opened`, select a gossip instance from the `Gossip List` panel the view the details about the gossip.  
-
+Currently the `Save` feature doesn't work, in the future the program could also edit the selected files.  
 
 ## Editing XML files
 Currently `gossipSim` can only read `NPC_Data.xml` and `Gossip_Data.xml`.  
