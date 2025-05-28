@@ -23,7 +23,7 @@ namespace GS { namespace gossip {
 
 		void readGossipDataFile(const std::string& fileLoc);
 
-		uint32_t createGossip(GossipType type, const std::string& about, const npc::NPC& npcToStartFrom);
+		uint32_t createGossip(std::string id, GossipType type, const std::string& about, const npc::NPC& npcToStartFrom);
 		void registerGossipListener(uint32_t gossipID, const npc::NPC* listener);
 
 		Gossip getGossipFromID(uint32_t gossipID) { return m_activeGossips[gossipID - 1]; }

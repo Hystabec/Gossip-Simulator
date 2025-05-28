@@ -26,9 +26,9 @@ namespace GS { namespace gossip {
         if (m_gossipEvents.begin()->startTick == currentTick)
         {
             const GS::npc::NPC& npcFound = npc::NPCManager::get().findNPC(m_gossipEvents.begin()->startingFrom);
-            const_cast<GS::npc::NPC&>(npcFound).storeGossip(this->createGossip(m_gossipEvents.begin()->type, m_gossipEvents.begin()->aboutNPC, npcFound));
+            const_cast<GS::npc::NPC&>(npcFound).storeGossip(this->createGossip(m_gossipEvents.begin()->fileID, m_gossipEvents.begin()->type, m_gossipEvents.begin()->aboutNPC, npcFound));
 
-            DD_LOG_INFO("Gossip created on Tick {} | Type = {}, about = '{}', startingFrom = '{}'", currentTick, gossip_to_string(m_gossipEvents.begin()->type), m_gossipEvents.begin()->aboutNPC, m_gossipEvents.begin()->startingFrom);
+            DD_LOG_INFO("Gossip created on Tick {} | ID = {} Type = {}, about = '{}', startingFrom = '{}'", currentTick, m_gossipEvents.begin()->fileID, gossip_to_string(m_gossipEvents.begin()->type), m_gossipEvents.begin()->aboutNPC, m_gossipEvents.begin()->startingFrom);
             m_gossipEvents.erase(m_gossipEvents.begin());
         }
     }
@@ -44,6 +44,7 @@ namespace GS { namespace gossip {
         for (pugi::xml_node node_gossip : gossipEvent.child("listOfGossipEvents"))
         {
             m_gossipEvents.insert({ 
+                node_gossip.attribute("id").as_string(),
                 string_to_gossip_type(node_gossip.attribute("type").as_string()),
                 node_gossip.attribute("about").as_string(),
                 node_gossip.attribute("startingFrom").as_string(),
@@ -52,12 +53,12 @@ namespace GS { namespace gossip {
         }
     }
 
-    uint32_t GossipManager::createGossip(GossipType type, const std::string& about, const npc::NPC& npcToStartFrom)
+    uint32_t GossipManager::createGossip(std::string id, GossipType type, const std::string& about, const npc::NPC& npcToStartFrom)
     {
-        uint32_t id = m_activeGossips.size() + 1;
-        m_activeGossips.push_back({ type,about, id });
-        m_activeGossipMap.insert({ id, {&npcToStartFrom}});
-        return id;
+        uint32_t tackingid = m_activeGossips.size() + 1;
+        m_activeGossips.push_back({ type,about, id, tackingid });
+        m_activeGossipMap.insert({ tackingid, {&npcToStartFrom}});
+        return tackingid;
     }
 
     void GossipManager::registerGossipListener(uint32_t gossipID, const npc::NPC* listener)

@@ -11,8 +11,8 @@ namespace GS::gossip {
 		std::string startingFrom;
 		uint32_t startTick;
 
-		PreGossip(GossipType type, const std::string& about, const std::string& startingFrom, uint32_t startTick)
-			: Gossip(type, about, 0), startingFrom(startingFrom), startTick(startTick)
+		PreGossip(std::string fileID, GossipType type, const std::string& about, const std::string& startingFrom, uint32_t startTick)
+			: Gossip(type, about, fileID, 0), startingFrom(startingFrom), startTick(startTick)
 		{
 		}
 

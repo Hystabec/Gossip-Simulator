@@ -19,15 +19,16 @@ namespace GS { namespace gossip {
 	{
 		GossipType type;
 		std::string aboutNPC;
-		uint32_t id;
+		std::string fileID;
+		uint32_t trackingID;
 
 		Gossip()
-			: type(GossipType::neutral), aboutNPC("NULL"), id(0)
+			: type(GossipType::neutral), aboutNPC("NULL"), fileID(""), trackingID(0)
 		{
 		}
 
-		Gossip(GossipType type, const std::string& about, uint32_t id)
-			: type(type), aboutNPC(about), id(id)
+		Gossip(GossipType type, const std::string& about, std::string fileID, uint32_t trackingID)
+			: type(type), aboutNPC(about), fileID(fileID), trackingID(trackingID)
 		{
 		}
 
