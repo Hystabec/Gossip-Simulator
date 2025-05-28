@@ -19,9 +19,9 @@ if the gossip is negative AND about an NPC they dislike, they will tell all the 
 When hearing gossip the NPC will choose to `Remember` or `ignore` it.  
 
 NPCs with `no specified personality` will follow these rules:  
-1. NPCs will always ignore gossip about themselves.  
-2. NPCs will also ignore gossip about NPCs they don't know.  
-3. The table below shows the outcome of the gossip, when about known NPCs:  
+NPCs will always ignore gossip about themselves.  
+NPCs will also ignore gossip about NPCs they don't know.  
+The table below shows the outcome of the gossip, when about known NPCs:  
 | About NPC relation is | Gossip type is | Outcome  |  
 | --------------------- | -------------- | -------- |  
 | Positive              | Positive       | Remember |  
