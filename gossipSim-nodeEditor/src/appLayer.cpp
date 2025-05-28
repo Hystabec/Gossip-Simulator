@@ -220,7 +220,7 @@ void AppLayer::setOpenFile(const std::string& file)
 		pugi::xml_parse_result result = m_currentXmlFile.load_file(file.c_str());
 
 		if (!result)
-			DD_ASSERT(false, DD_ASSERT_FORMAT_MESSAGE("Couldnt find {}", npcFile));
+			DD_ASSERT(false, DD_ASSERT_FORMAT_MESSAGE("Couldnt find {}", file));
 
 		//Try NPC File
 		if (m_currentXmlFile.child("listOfNPC"))

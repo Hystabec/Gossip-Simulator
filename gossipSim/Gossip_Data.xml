@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <listOfGossipEvents>
-    <Event id="1" type="positive" about="Bravo" startingFrom="Alpha" startTick="0"/>
-    <Event id="2" type="negative" about="Alpha" startingFrom="Delta" startTick="10"/>
-    <Event id="3" type="neutral" about="Hotel" startingFrom="Golf" startTick="20"/>
+	<Event id="1" type="positive" about="Bravo" startingFrom="Alpha" startTick="0" />
+	<Event id="2" type="negative" about="Alpha" startingFrom="Delta" startTick="10" />
+	<Event id="3" type="neutral" about="Hotel" startingFrom="Golf" startTick="20" />
 </listOfGossipEvents>
