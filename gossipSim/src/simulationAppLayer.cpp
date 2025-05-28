@@ -123,6 +123,8 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 
 void SimLayer::imGuiRender()
 {
+	ImGui::DockSpaceOverViewport(0, 0, ImGuiDockNodeFlags_PassthruCentralNode);
+
 	ImGui::Begin("NPC Details");
 	char tickBuff[50];
 	sprintf_s(tickBuff, "NPCs ticked %i time(s)", m_numNPCTicks);
