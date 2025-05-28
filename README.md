@@ -22,11 +22,12 @@ NPCs will always ignore gossip about themselves.
 NPCs will also ignore gossip about NPCs they don't know.  
 
 This table shows the outcome of gossip type when about known NPCs:  
-About NPC relation | Gossip type | Outcome
-Positive           | Positive    | Remember
-Positive           | Negative    | Ignore
-Negative           | Positive    | Ignore
-Negative           | Negative    | Remember
+| About NPC relation | Gossip type | Outcome  |  
+| ------------------ | ----------- | -------- |  
+| Positive           | Positive    | Remember |  
+| Positive           | Negative    | Ignore   |  
+| Negative           | Positive    | Ignore   |  
+| Negative           | Negative    | Remember |  
 
 NPCs can have a `personality` which can be either of the following: `Spreader` or `Sink`.  
 NPCs with the `Spreader` personality will listen to and spread all gossip as long as the gossip is not about them.  
