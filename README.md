@@ -9,14 +9,20 @@ The number of NPCs and their relationships is defined in `NPC_Data.xml`.
 
 Each `NPC Tick` (`2 seconds`) the NPCs will be updated.  
 Each `NPC Tick` if a gossip instance is to start on that tick (specified in `Gossip_Data.xml`), the gossip will be given to the NPC and then they will start spreading it `next tick`.  
-
 When an NPC hears gossip the will wait `1 tick` before spreading it.  
 
+Gossip has 3 types:  
+1. `Positive`
+2. `Negative`
+3. `Neutral`
+
+NPCs can either have a `Positve` or `Negative` relationship with other NPCs.  
+
 IF the NPC has heared a gossip, but is yet to tell it, they will attempt tell the NPCs they know:  
-if the gossip is positive AND about an NPC they like, they will tell all the other NPCs (that they like).  
-if the gossip is negative AND about an NPC they dislike, they will tell all the other NPCs (that they like).  
+NPCs will tell gossip to everyone that they know AND have a positive relationship with.  
 
 When hearing gossip the NPC will choose to `Remember` or `ignore` it.  
+NPCs will always ignore gossip they have already heard.  
 
 NPCs with `no specified personality` will follow these rules:  
 NPCs will always ignore gossip about themselves.  
@@ -26,8 +32,10 @@ The table below shows the outcome of the gossip, when about known NPCs:
 | --------------------- | -------------- | -------- |  
 | Positive              | Positive       | Remember |  
 | Positive              | Negative       | Ignore   |  
+| Positive              | Neutral        | Remember |  
 | Negative              | Positive       | Ignore   |  
 | Negative              | Negative       | Remember |  
+| Negative              | Neutral        | Ignore   |  
 
 NPCs can have a `personality` which can be either of the following: `Spreader` or `Sink`.  
 NPCs with the `Spreader` personality will listen to and spread all gossip as long as the gossip is not about them.  
@@ -95,11 +103,12 @@ Example:
 ```
 NPCs can have a specified personality `spreader` or `sink`, if no personality is specifed the will follow the default rules.  
 Currently any value `greater than 0` is classed as a `positive` relation.  
-Any value `less than 0` is classed as a `negative` relation.  
+Any value `less than or equal to 0` is classed as a `negative` relation.  
 
 ---
 
 Gossip events can be Edited in the `Gossip_Data.xml` file.  
+Gossip type include: `positive`, `negative` and `neutral`.  
 The Gossip data file follows the structure.  
 ```
 <listOfGossipEvents>
@@ -113,6 +122,12 @@ Example:
 	<Event id="2" type="negative" about="Alpha" startingFrom="Delta" startTick="10" />
 </listOfGossipEvents>
 ```
+
+## Notes (Simulation)
+Currently as the `spreading` of gossip can happen fast, if you want to see the `purple highlighting` update as gossip is passed around, you will need to click on the `gossip instance` as soon as it appears in the `Gossip List`.  
+
+Sometimes a `graphical artifact` can appear, I think this is due to the renderer reading uninitialized memory (havent had time to fix yet).  
+To fix the artifcating close an reopen the program (might need to do a few times).  
 
 
 ## Installation (Uncompiled Project)
