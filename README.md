@@ -16,9 +16,9 @@ Gossip has 3 types:
 2. `Negative`
 3. `Neutral`
 
-NPCs can either have a `Positve` or `Negative` relationship with other NPCs.  
+NPCs can either have a `Positive` or `Negative` relationship with other NPCs.  
 
-IF the NPC has heared a gossip, but is yet to tell it, they will attempt tell the NPCs they know:  
+IF the NPC has heard a gossip, but is yet to tell it, they will attempt tell the NPCs they know:  
 NPCs will tell gossip to everyone that they know AND have a positive relationship with.  
 
 When hearing gossip the NPC will choose to `Remember` or `ignore` it.  
@@ -47,18 +47,18 @@ NPCs with the `Sink` personality will listen to all gossip but will never spread
 When opened a `window` and `console` will spawn.  
 
 The `console` will show information about: 
-1. when a new gossip insance is started
+1. when a new gossip instance is started
 2. when an NPC start telling gossip
 3. When an NPC tells another NPC gossip and the outcome of the gossip telling (remembered or ignored), with the reason for the outcome.  
 
-The `window` shows all the NPCs (white circles as default) as well as 2 pannels `NPC Details` and `Gossip Selector`.  
+The `window` shows all the NPCs (white circles as default) as well as 2 panels `NPC Details` and `Gossip Selector`.  
 When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`,  
-while the NPC remains hovered, the `NPC Details` pannel will display the relationships of the hovered NPC.  
-The `NPC Details` pannel also shows the `NPCs ticked counter` this counter is updated each time the NPCs are ticked.  
-The `Gossip Selector` pannel contains a list of the currently active gossip instancese, selecting a gossip from the list will cause the NPCs that have heard the gossip to `highlight in purple`.  
+while the NPC remains hovered, the `NPC Details` panel will display the relationships of the hovered NPC.  
+The `NPC Details` panel also shows the `NPCs ticked counter` this counter is updated each time the NPCs are ticked.  
+The `Gossip Selector` panel contains a list of the currently active gossip instances, selecting a gossip from the list will cause the NPCs that have heard the gossip to `highlight in purple`.  
 
 The NPCs are loaded from `NPC_Data.xml` when the program is started an will be renderer to the screen.  
-The gossip instances are loaded from `Gossip_Data.xml` and will occure on the `startTick` specified in the file, the start tick relates to the `NPCs ticked counter` on the `NPC Details` pannel.  
+The gossip instances are loaded from `Gossip_Data.xml` and will occur on the `startTick` specified in the file, the start tick relates to the `NPCs ticked counter` on the `NPC Details` pannel.  
 NPCs will wait `1 NPC tick` after hearing a gossip instance before the start spreading it.  
 
 -----
@@ -67,8 +67,8 @@ NPCs will wait `1 NPC tick` after hearing a gossip instance before the start spr
 (Currently the program only has the ability to read the files.)  
 When executed the user will need to open an XML file `File -> Open`.  
 Select either `NPC_Data.xml` OR `Gossip_Data.xml`.  
-If the `NPC file was opened`, select an NPC from the `NPC List` pannel the view the details about the NPC.  
-If the `gossip file was opened`, select a gossip instance from the `Gossip List` pannel the view the details about the gossip.  
+If the `NPC file was opened`, select an NPC from the `NPC List` panel the view the details about the NPC.  
+If the `gossip file was opened`, select a gossip instance from the `Gossip List` panel the view the details about the gossip.  
 
 
 ## Editing XML files
@@ -101,7 +101,7 @@ Example:
     </NPC>
 </listOfNPC>
 ```
-NPCs can have a specified personality `spreader` or `sink`, if no personality is specifed the will follow the default rules.  
+NPCs can have a specified personality `spreader` or `sink`, if no personality is specified the will follow the default rules.  
 Currently any value `greater than 0` is classed as a `positive` relation.  
 Any value `less than or equal to 0` is classed as a `negative` relation.  
 
@@ -126,8 +126,8 @@ Example:
 ## Notes (Simulation)
 Currently as the `spreading` of gossip can happen fast, if you want to see the `purple highlighting` update as gossip is passed around, you will need to click on the `gossip instance` as soon as it appears in the `Gossip List`.  
 
-Sometimes a `graphical artifact` can appear, I think this is due to the renderer reading uninitialized memory (havent had time to fix yet).  
-To fix the artifcating close an reopen the program (might need to do a few times).  
+Sometimes a `graphical artifact` can appear, I think this is due to the renderer reading uninitialized memory (haven't had time to fix yet).  
+To fix the artifacting close an reopen the program (might need to do a few times).  
 
 
 ## Installation (Uncompiled Project)
