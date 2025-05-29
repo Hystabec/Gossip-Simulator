@@ -60,15 +60,21 @@ namespace GS::npc {
 		s_instance = nullptr;
 	}
 
-	const GS::npc::NPC& NPCManager::findNPC(const std::string& name) const
+	const GS::npc::NPC& NPCManager::findNPC(const std::string& name, bool* found) const
 	{
 		for (auto& npc : m_npcVec)
 		{
 			if (npc.getName() == name)
+			{
+				if(found)
+					*found = true;
 				return npc;
+			}
 		}
 
 		DD_LOG_WARN("NPC ({}) not found, NPC(NULL) returned", name);
+		if (found)
+			*found = false;
 		return GS::npc::NPC();
 	}
 

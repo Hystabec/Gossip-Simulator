@@ -49,9 +49,15 @@ namespace GS::npc {
 				if (npcRel.second < 1 && m_personality != personality::gossipSpreader) // gossip spreaders will tell everyone they know not just people they like
 					continue;
 
-				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
-				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), storedGossip.fileID);
-				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossips.front(), this);
+				bool NPCFoundBool;
+				auto& asNPC = NPCManager::get().findNPC(npcRel.first, &NPCFoundBool);
+				if (NPCFoundBool)
+				{
+					DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), storedGossip.fileID);
+					const_cast<NPC&>(asNPC).listenToGossip(m_storedGossips.front(), this);
+				}
+				else
+					DD_LOG_ERROR("{} couldn't tell gossip | NPC {} not found", m_name, npcRel.first);
 			}
 
 			m_toldRecentGossip = true;
@@ -88,7 +94,7 @@ namespace GS::npc {
 			//This const_cast is a little goffy but its how i can get around findNPC returning a const ref
 
 			if (revertToDefault)
-				const_cast<NPC&>(NPCManager::get().findNPC(npcRel.first)).setColour({1, 1, 1, 1});
+				const_cast<NPC&>(NPCManager::get().findNPC(npcRel.first)).setColour({ 1, 1, 1, 1 });
 			else
 				const_cast<NPC&>(NPCManager::get().findNPC(npcRel.first)).setColour(npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour);
 		}

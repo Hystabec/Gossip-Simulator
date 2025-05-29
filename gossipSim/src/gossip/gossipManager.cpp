@@ -27,7 +27,16 @@ namespace GS { namespace gossip {
 
         if (m_gossipEvents.begin()->startTick == currentTick)
         {
-            const GS::npc::NPC& npcFound = npc::NPCManager::get().findNPC(m_gossipEvents.begin()->startingFrom);
+            bool npcFoundBool = false;
+            const GS::npc::NPC& npcFound = npc::NPCManager::get().findNPC(m_gossipEvents.begin()->startingFrom, &npcFoundBool);
+
+            if (!npcFoundBool)
+            {
+                DD_LOG_ERROR("Gossip failed to create [NPC not found] Gossip ID: {}", m_gossipEvents.begin()->fileID);
+                m_gossipEvents.erase(m_gossipEvents.begin());
+                return;
+            }
+
             const_cast<GS::npc::NPC&>(npcFound).storeGossip(this->createGossip(m_gossipEvents.begin()->fileID, m_gossipEvents.begin()->type, m_gossipEvents.begin()->aboutNPC, npcFound));
 
             DD_LOG_INFO("Gossip created on Tick {} | ID = {} Type = {}, about = '{}', startingFrom = '{}'", currentTick, m_gossipEvents.begin()->fileID, gossip_to_string(m_gossipEvents.begin()->type), m_gossipEvents.begin()->aboutNPC, m_gossipEvents.begin()->startingFrom);

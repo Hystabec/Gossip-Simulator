@@ -10,7 +10,7 @@ The project contains 2 application `gossipSim` and `gossipSim-nodeEditor`.
 ## Simulation Description
 The number of NPCs and their relationships is defined in `NPC_Data.xml`.  
 
-Each `NPC Tick` (`2 seconds`) the NPCs will be updated, unless the simulation is `paused`.  
+Each `NPC Tick` (also called `Update Tick` or `Tick`) (`2 seconds`) the NPCs will be updated, unless the simulation is `paused`.  
 Each `NPC Tick` if a gossip instance is to start on that tick (specified in `Gossip_Data.xml`), the gossip will be given to the NPC and then they will start spreading it `next tick`.  
 When an NPC hears gossip the will wait `1 tick` before spreading it.  
 
@@ -61,7 +61,7 @@ The `console` will show information about:
 The `window` shows all the NPCs (white circles as default) as well as 4 panels `Simulator Controls`, `NPC Details`, `Gossip Selector` and `Gossip Details`.  
 
 The `Camera` can be moved using `W A S D`.  
-When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`.  
+When a `NPC is hovered`, with the mouse cursor, the `hovered NPC` will turn `gray` and the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked`, `Red is disliked` and `Stay white if they don't know them`.  
 
 ### Simulator Controls Panel
 The `Simulator Controls` panel allow the user to control the simulator.  

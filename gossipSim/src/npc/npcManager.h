@@ -11,7 +11,7 @@ namespace GS::npc {
 
 		inline static NPCManager& get() { return *s_instance; }
 
-		const GS::npc::NPC& findNPC(const std::string& name) const;
+		const GS::npc::NPC& findNPC(const std::string& name, bool* found = nullptr) const;
 		std::vector<GS::npc::NPC>& getNPCVec() { return m_npcVec; };
 
 		void restart();
