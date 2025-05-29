@@ -58,7 +58,8 @@ The `console` will show information about:
 
 The `window` shows all the NPCs (white circles as default) as well as 4 panels `Simulator Controls`, `NPC Details`, `Gossip Selector` and `Gossip Details`.  
 
----
+
+
 ### Simulator Controls Panel
 The `Simulator Controls` panel allow the user to control the simulator.  
 This panel alows the user to:  
@@ -101,7 +102,7 @@ A `gossip event` consists of:
 * The outcome of the gossip (If it was `Remembered` or `Ignored`)  
 If the `(?)` is hovered over on the `Outcome` result the reason for remebering or ignore the gossip will be displayed.  
 
----
+
 
 When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`.  
 
