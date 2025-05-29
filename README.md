@@ -8,10 +8,9 @@ The project contains 2 application `gossipSim` and `gossipSim-nodeEditor`.
 `gossipSim-nodeEditor` is a helper program that allows the user to view the XML files (`NPC_Data.xml`, `Gossip_Data.xml`) with a GUI.  
 
 ## Simulation Description
-The simulation start as soon as the `gossipSim` program is executed.  
 The number of NPCs and their relationships is defined in `NPC_Data.xml`.  
 
-Each `NPC Tick` (`2 seconds`) the NPCs will be updated.  
+Each `NPC Tick` (`2 seconds`) the NPCs will be updated, unless the simulation is `paused`.  
 Each `NPC Tick` if a gossip instance is to start on that tick (specified in `Gossip_Data.xml`), the gossip will be given to the NPC and then they will start spreading it `next tick`.  
 When an NPC hears gossip the will wait `1 tick` before spreading it.  
 
@@ -50,16 +49,61 @@ NPCs with the `Sink` personality will listen to all gossip but will never spread
 `gossipSim` is the primary program that allows the simulation to be viewed.  
 When opened a `window` and `console` will spawn.  
 
+The `Camera` can be moved using `W A S D`.  
+
 The `console` will show information about: 
 1. when a new gossip instance is started
 2. when an NPC start telling gossip
 3. When an NPC tells another NPC gossip and the outcome of the gossip telling (remembered or ignored), with the reason for the outcome.  
 
-The `window` shows all the NPCs (white circles as default) as well as 2 panels `NPC Details` and `Gossip Selector`.  
-When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`,  
-while the NPC remains hovered, the `NPC Details` panel will display the relationships of the hovered NPC.  
-The `NPC Details` panel also shows the `NPCs ticked counter` this counter is updated each time the NPCs are ticked.  
+The `window` shows all the NPCs (white circles as default) as well as 4 panels `Simulator Controls`, `NPC Details`, `Gossip Selector` and `Gossip Details`.  
+
+---
+### Simulator Controls Panel
+The `Simulator Controls` panel allow the user to control the simulator.  
+This panel alows the user to:  
+* Play and Pause the simulation  
+* Manually move to the next update tick  
+* View the current update tick  
+* View the time until the next update tick  
+* Restart the simulation  
+
+The `Play` button (which become `Pause` while the simulator is running) allows the user to start and stop the simulation.  
+The `Next Tick` button allows the user to manually move the simulation to the next update tick (can be used while the simulation is both running and paused).  
+The `Restart` button allows the user the restart the simulation to the beginning.  
+
+### NPC Details Panel
+The `NPC Details` panel shows the `NPCs ticked counter` this counter is updated each time the NPCs are ticked, this counter is also show on the `Simulator Controls` panel as the `Current Tick` counter.  
+While an NPC is hovered (with the mouse cursor), the `NPC Details` panel will display the details of that NPC.  
+Details show include:  
+1. The name of the NPC  
+2. The personality of the NPC  
+3. A relationship table  
+The `relationship table` show all the other NPCs that the hovered NPC knows as well as if the relationship is `Positive` or `Negative`.  
+
+### Gossip Selector Panel
 The `Gossip Selector` panel contains a list of the currently active gossip instances, selecting a gossip from the list will cause the NPCs that have heard the gossip to `highlight in purple`.  
+The `Gossip Details` panel will also show details of the selected gossip.  
+
+### Gossip Details Panel
+The `Gossip Details` panel (by default) will show a message telling the user to select a gossip instance from the `Gossip Selector` panel.  
+Once a gossip instance has been selected the details of the gossip will be displayed.  
+These details are:  
+* The ID of the gossip (which is specified in `Gossip_Data.xml`)  
+* The name of the NPC that the gossip is about  
+* The type of the gossip (`Positive`, `Negative` or `Neutral`)  
+The `Event List` show the tick the gossip started on and the NPC that started it.  
+The `Event List` also has a table that contains each of the events of the gossip.  
+A `gossip event` consists of:
+* The tick the gossip occured  
+* The name of the NPC that was spreading the gossip  
+* The name of the NPC that heard the gossip  
+* The outcome of the gossip (If it was `Remembered` or `Ignored`)  
+If the `(?)` is hovered over on the `Outcome` result the reason for remebering or ignore the gossip will be displayed.  
+
+---
+
+When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`.  
 
 The NPCs are loaded from `NPC_Data.xml` when the program is started an will be renderer to the screen.  
 The gossip instances are loaded from `Gossip_Data.xml` and will occur on the `startTick` specified in the file, the start tick relates to the `NPCs ticked counter` on the `NPC Details` pannel.  

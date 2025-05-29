@@ -20,6 +20,8 @@ namespace GS { namespace gossip {
 
     void GossipManager::tick(uint32_t currentTick)
     {
+        m_curTick = currentTick;
+
         if (m_gossipEvents.empty())
             return;
 
@@ -33,8 +35,19 @@ namespace GS { namespace gossip {
         }
     }
 
+    void GossipManager::restart()
+    {
+        m_activeGossipMap.clear();
+        m_activeGossips.clear();
+        m_detailedGossips.clear();
+        m_gossipEvents.clear();
+        readGossipDataFile(m_readFileLoc);
+    }
+
     void GossipManager::readGossipDataFile(const std::string& fileLoc)
     {
+        m_readFileLoc = fileLoc;
+
         pugi::xml_document gossipEvent;
         pugi::xml_parse_result result = gossipEvent.load_file(fileLoc.c_str());
 
@@ -57,6 +70,7 @@ namespace GS { namespace gossip {
     {
         uint32_t tackingid = m_activeGossips.size() + 1;
         m_activeGossips.push_back({ type,about, id, tackingid });
+        m_detailedGossips.push_back({ m_activeGossips.back(), npcToStartFrom.getName(), m_curTick });
         m_activeGossipMap.insert({ tackingid, {&npcToStartFrom}});
         return tackingid;
     }
@@ -64,6 +78,11 @@ namespace GS { namespace gossip {
     void GossipManager::registerGossipListener(uint32_t gossipID, const npc::NPC* listener)
     {
         m_activeGossipMap[gossipID].push_back(listener);
+    }
+
+    void GossipManager::registerGossipEvent(uint32_t gossipID, const npc::NPC* listener, const npc::NPC* teller, bool outcome, const std::string& reason)
+    {
+        m_detailedGossips[gossipID - 1].addEvent(m_curTick, { teller->getName(), listener->getName(), outcome, reason });
     }
 
 } }

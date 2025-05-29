@@ -51,11 +51,19 @@ namespace GS::npc {
 
 				auto& asNPC = NPCManager::get().findNPC(npcRel.first);
 				DD_LOG_INFO("{} told {} gossip | gossipID = [{}]", m_name, asNPC.getName(), storedGossip.fileID);
-				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossips.front());
+				const_cast<NPC&>(asNPC).listenToGossip(m_storedGossips.front(), this);
 			}
 
 			m_toldRecentGossip = true;
 		}
+	}
+
+	void NPC::reset()
+	{
+		m_storedGossips.clear();
+		m_toldRecentGossip = true;
+		m_toldGossipThisTick = false;
+		this->setColour({ 1,1,1,1 });
 	}
 
 	void NPC::setColour(const daedalusCore::maths::vec4& colour)
@@ -126,7 +134,7 @@ namespace GS::npc {
 		return false;
 	}
 
-	void NPC::listenToGossip(uint32_t gossipID)
+	void NPC::listenToGossip(uint32_t gossipID, const NPC* teller)
 	{
 		gossip::GossipManager::get().registerGossipListener(gossipID, this);
 
@@ -136,6 +144,7 @@ namespace GS::npc {
 		if (foward_list_contains(m_storedGossips, gossipID))
 		{
 			DD_LOG_INFO("{} ignored gossip about {} | reason = 'already heard it' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipInstance.fileID);
+			gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "Already heard");
 			return;
 		}
 
@@ -143,6 +152,7 @@ namespace GS::npc {
 		if (gossipInstance.aboutNPC == m_name)
 		{
 			DD_LOG_INFO("{} ignored gossip about {} | reason = 'about me' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipInstance.fileID);
+			gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "About me");
 			return;
 		}
 
@@ -152,6 +162,7 @@ namespace GS::npc {
 			m_toldRecentGossip = false;
 			m_toldGossipThisTick = true;
 			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip sink' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+			gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, true, "I'm a gossip sink");
 			return;
 		}
 		else if (m_personality == personality::gossipSpreader)
@@ -160,6 +171,7 @@ namespace GS::npc {
 			m_toldRecentGossip = false;
 			m_toldGossipThisTick = true;
 			DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'im a gossip spreader' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+			gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, true, "I'm a gossip spreader");
 			return;
 		}
 
@@ -177,6 +189,7 @@ namespace GS::npc {
 					m_toldRecentGossip = false;
 					m_toldGossipThisTick = true;
 					DD_LOG_INFO("{} remembered {} gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+					gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, true, "About someone I like");
 					return;
 				}
 				else
@@ -184,6 +197,7 @@ namespace GS::npc {
 					// "negative gossip about someone i like - ill ignore it"
 
 					DD_LOG_INFO("{} ignored negative gossip about {} | reason = 'about someone i like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipInstance.fileID);
+					gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "About someone I like");
 					return;
 				}
 			}
@@ -197,6 +211,7 @@ namespace GS::npc {
 					m_toldRecentGossip = false;
 					m_toldGossipThisTick = true;
 					DD_LOG_INFO("{} remembered negative gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossipInstance.aboutNPC, gossipInstance.fileID);
+					gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, true, "About someone I don't like");
 					return;
 				}
 				else
@@ -204,18 +219,21 @@ namespace GS::npc {
 					// "positive or neutral gossip about someone i dont like - ill ignore it"
 
 					DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont like' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+					gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "About someone I don't like");
 					return;
 				}
 			}
 			else // "The gossip is about someone i dont have an opinion, so ill ignore it"
 			{
 				DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont have an opinion of' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+				gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "About someone I don't have an opinion of");
 				return;
 			}
 		}
 
 		// "The gossip is about someone i dont know, so ill ignore it"
 		DD_LOG_INFO("{} ignored {} gossip about {} | reason = 'about someone i dont know' | gossipID = [{}]", m_name, gossip::gossip_to_string(gossipInstance.type), gossipInstance.aboutNPC, gossipInstance.fileID);
+		gossip::GossipManager::get().registerGossipEvent(gossipID, this, teller, false, "About someone I don't know");
 		return;
 	}
 
@@ -281,10 +299,29 @@ namespace GS::npc {
 
 	void NPC::displayDataToImGui()
 	{
+		ImGui::SeparatorText("Hovered NPC Details");
 		ImGui::Text("NPC Name: %s", m_name.c_str());
-		ImGui::SeparatorText("Relations");
-		for (auto relation : m_relationMap)
-			ImGui::Text("NPC: %s, Relation: %s", relation.first.c_str(), relation.second > 0 ? "positive" : "negative");
+		ImGui::Text("Personality: %s", personality_to_string(m_personality).c_str());
+		ImGui::Separator();
+		if (ImGui::BeginTable("relationshioTable", 2, ImGuiTableFlags_Borders))
+		{
+			ImGui::TableSetupColumn("NPC");
+			ImGui::TableSetupColumn("Relationship");
+			ImGui::TableHeadersRow();
+
+			for (auto relation : m_relationMap)
+			{
+				ImGui::TableNextRow();
+
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text(relation.first.c_str());
+
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text(relation.second > 0 ? "positve" : "negative");
+			}
+
+			ImGui::EndTable();
+		}
 	}
 
 	bool NPC::npcExsitsInMap(const std::string& npc)

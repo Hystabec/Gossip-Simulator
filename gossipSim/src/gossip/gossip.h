@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <string>
 
 namespace GS { namespace gossip {
 

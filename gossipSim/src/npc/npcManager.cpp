@@ -32,7 +32,7 @@ namespace GS::npc {
 		int npcCount = 0;
 		for (pugi::xml_node node_NPC : npcDoc.child("listOfNPC"))
 		{
-			quadProps.position = { (float)npcX + -1.0f, (float)-npcY + 0.75f, (float)npcCount * 0.01f };
+			quadProps.position = { ((float)npcX * 0.8f) + -1.0f, (float)-npcY + 0.50f, (float)npcCount * 0.01f};
 
 			m_npcVec.emplace_back(node_NPC.attribute("name").as_string(), quadProps);
 			GS::npc::NPC& curNPC = m_npcVec.back();
@@ -70,6 +70,14 @@ namespace GS::npc {
 
 		DD_LOG_WARN("NPC ({}) not found, NPC(NULL) returned", name);
 		return GS::npc::NPC();
+	}
+
+	void NPCManager::restart()
+	{
+		for (auto& npc : m_npcVec)
+		{
+			npc.reset();
+		}
 	}
 
 }

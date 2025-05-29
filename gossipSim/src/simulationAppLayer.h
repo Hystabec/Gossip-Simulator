@@ -20,6 +20,7 @@ private:
 
 
 	float secondsBetweenNPCUpdates = 2.0f;
+	float m_npcUpdateTime = 0.0f;
 	GS::npc::NPCManager m_npcManager;
 	GS::gossip::GossipManager m_gossipManager;
 	uint32_t m_selectedGossip = 0;
@@ -27,4 +28,6 @@ private:
 
 	bool m_mouseInBoundsThisFrame = false;
 	GS::npc::NPC* m_hoveredNPC = nullptr;
+
+	bool m_userUpdatePaused = true;
 };

@@ -28,6 +28,21 @@ namespace GS::npc {
 			return personality::standard;
 	}
 
+	inline std::string personality_to_string(const personality& pers)
+	{
+		switch (pers)
+		{
+		case personality::standard:
+			return "None";
+		case personality::gossipSink:
+			return "Sink";
+		case personality::gossipSpreader:
+			return "Spreader";
+		default:
+			return "";
+		}
+	}
+
 	class NPC
 	{
 	public:
@@ -36,6 +51,8 @@ namespace GS::npc {
 		~NPC();
 
 		void tick();
+
+		void reset();
 
 		inline void setPersonality(personality newPersonality) { m_personality = newPersonality; }
 
@@ -57,7 +74,7 @@ namespace GS::npc {
 
 		inline std::string getName() const { return m_name; }
 
-		void listenToGossip(uint32_t gossipID);
+		void listenToGossip(uint32_t gossipID, const NPC* teller);
 
 		inline void storeGossip(uint32_t gossipID) { m_storedGossips.push_front(gossipID); m_toldRecentGossip = false; }
 

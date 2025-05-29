@@ -39,8 +39,8 @@ void SimLayer::detach()
 
 void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 {
-	static float updateTime = 0.0f;
-	updateTime += dt.getSeconds();
+	if(!m_userUpdatePaused)
+		m_npcUpdateTime += dt.getSeconds();
 
 	m_mouseInBoundsThisFrame = false;
 	m_camController.update(dt);
@@ -50,9 +50,12 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	for (auto& npc : m_npcManager.getNPCVec())
 	{
 #if TICK_ONCE_SECOND
-		if (updateTime >= secondsBetweenNPCUpdates)
+		if (!m_userUpdatePaused)
 		{
-			npc.tick();
+			if (m_npcUpdateTime >= secondsBetweenNPCUpdates)
+			{
+				npc.tick();
+			}
 		}
 #else
 		npc.tick():
@@ -73,10 +76,13 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	}
 
 #if TICK_ONCE_SECOND
-	if (updateTime >= secondsBetweenNPCUpdates)
+	if (!m_userUpdatePaused)
 	{
-		m_numNPCTicks++;
-		updateTime = 0.0f;
+		if (m_npcUpdateTime >= secondsBetweenNPCUpdates)
+		{
+			m_numNPCTicks++;
+			m_npcUpdateTime = 0.0f;
+		}
 	}
 #else
 	m_numNPCTicks++;
@@ -107,8 +113,8 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 
 #endif
 
-	if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
-		m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
+	//if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
+	//	m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
 
 	daedalusCore::graphics::RenderCommands::setClearColour({0.14f, 0.14f, 0.14f, 1.0f});
 	daedalusCore::graphics::RenderCommands::clear();
@@ -124,6 +130,53 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 void SimLayer::imGuiRender()
 {
 	ImGui::DockSpaceOverViewport(0, 0, ImGuiDockNodeFlags_PassthruCentralNode);
+
+	ImGui::Begin("Simulator Controls");
+
+	char playButtonbuff[50];
+	sprintf_s(playButtonbuff, "%s", m_userUpdatePaused ? "Play" : "Pause");
+
+	if (ImGui::Button(playButtonbuff))
+	{
+		m_userUpdatePaused = !m_userUpdatePaused;
+		m_npcUpdateTime = 0.0f;
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Next Tick"))
+	{
+		for (auto& npc : m_npcManager.getNPCVec())
+			npc.tick();
+		
+		m_numNPCTicks++;
+	}
+
+	ImGui::SameLine();
+
+	ImGui::Text("[Current Tick: %i]", m_numNPCTicks);
+
+	ImGui::SameLine();
+
+	ImGui::Text("[Time until next tick: %.1f]", secondsBetweenNPCUpdates - m_npcUpdateTime);
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Restart"))
+	{
+		//restart logic
+		DD_LOG_WARN("Simulation restarted");
+
+		m_userUpdatePaused = true;
+		m_npcUpdateTime = 0.0f;
+		m_numNPCTicks = 0;
+		m_selectedGossip = 0;
+
+		m_npcManager.restart();
+		m_gossipManager.restart();
+	}
+
+	ImGui::End();
 
 	ImGui::Begin("NPC Details");
 	char tickBuff[50];
@@ -164,9 +217,85 @@ void SimLayer::imGuiRender()
 	}
 
 	ImGui::End();
+
+	ImGui::Begin("Gossip Details");
+
+	if (m_selectedGossip == 0)
+	{
+		ImGui::Text("No Gossip Selected");
+		ImGui::TextWrapped("Please select a gossip instance from the 'Gossip Selector' to view it's details");
+	}
+	else
+	{
+		const auto& dGossip = m_gossipManager.getDetailedGossipFromID(m_selectedGossip);
+
+		ImGui::SeparatorText("Details");
+		ImGui::Text("Gossip ID is %s", dGossip.fileID.c_str());
+		ImGui::Text("Gossip is about: %s", dGossip.aboutNPC.c_str());
+		ImGui::Text("Gossip type is %s", gossip_to_string(dGossip.type).c_str());
+
+		ImGui::SeparatorText("Events List");
+		ImGui::Text("Started on Tick %i from %s", dGossip.startTick, dGossip.startingNPC.c_str());
+
+		if (ImGui::BeginTable("EventTable", 4, ImGuiTableFlags_Borders))
+		{
+			ImGui::TableSetupColumn("Occurence Tick");
+			ImGui::TableSetupColumn("Spreader NPC");
+			ImGui::TableSetupColumn("Listener NPC");
+			ImGui::TableSetupColumn("Outcome");
+			//ImGui::TableSetupColumn("Reason");
+			ImGui::TableHeadersRow();
+
+			for (const auto& event : dGossip.eventMap)
+			{
+				for (const auto& gossipEvent : event.second)
+				{
+					ImGui::TableNextRow();
+
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("%i", event.first);
+
+					ImGui::TableSetColumnIndex(1);
+					ImGui::Text("%s", gossipEvent.spreader.c_str());
+
+					ImGui::TableSetColumnIndex(2);
+					ImGui::Text("%s", gossipEvent.listener.c_str());
+
+					ImGui::TableSetColumnIndex(3);
+					ImGui::Text("%s", gossipEvent.outcome ? "Remembered" : "Ignored");
+					ImGui::SameLine();
+
+					ImGui::TextDisabled("(?)");
+					if (ImGui::BeginItemTooltip())
+					{
+						ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+
+						char reasonBuffer[50];
+						sprintf_s(reasonBuffer, "Reason: \n%s", gossipEvent.reason.c_str());
+
+						ImGui::TextUnformatted(reasonBuffer);
+						ImGui::PopTextWrapPos();
+						ImGui::EndTooltip();
+					}
+
+					//ImGui::TableSetColumnIndex(4);
+					//ImGui::Text("%s", gossipEvent.reason.c_str());
+				}
+			}
+			ImGui::EndTable();
+		}
+
+		
+	}
+
+	ImGui::End();
 }
 
 void SimLayer::onEvent(daedalusCore::event::Event& e)
 {
+	//ignore mouse scrolled events 
+	if (e.getType() == daedalusCore::event::EventType::MouseScrolled)
+		return;
+
 	m_camController.onEvent(e);
 }
