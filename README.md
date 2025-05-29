@@ -49,7 +49,9 @@ NPCs with the `Sink` personality will listen to all gossip but will never spread
 `gossipSim` is the primary program that allows the simulation to be viewed.  
 When opened a `window` and `console` will spawn.  
 
-The `Camera` can be moved using `W A S D`.  
+The NPCs are loaded from `NPC_Data.xml` when the program is started an will be renderer to the screen.  
+The gossip instances are loaded from `Gossip_Data.xml` and will occur on the `startTick` specified in the file, the start tick relates to the `NPCs ticked counter` on the `NPC Details` pannel.  
+NPCs will wait `1 NPC tick` after hearing a gossip instance before the start spreading it.  
 
 The `console` will show information about: 
 1. when a new gossip instance is started
@@ -58,7 +60,8 @@ The `console` will show information about:
 
 The `window` shows all the NPCs (white circles as default) as well as 4 panels `Simulator Controls`, `NPC Details`, `Gossip Selector` and `Gossip Details`.  
 
-
+The `Camera` can be moved using `W A S D`.  
+When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`.  
 
 ### Simulator Controls Panel
 The `Simulator Controls` panel allow the user to control the simulator.  
@@ -101,14 +104,6 @@ A `gossip event` consists of:
 * The name of the NPC that heard the gossip  
 * The outcome of the gossip (If it was `Remembered` or `Ignored`)  
 If the `(?)` is hovered over on the `Outcome` result the reason for remebering or ignore the gossip will be displayed.  
-
-
-
-When a `NPC is hovered`, with the mouse cursor, the `other NPCs` will `change colour` to reflect their relationships with the other NPC `Green is liked` and `Red is disliked`.  
-
-The NPCs are loaded from `NPC_Data.xml` when the program is started an will be renderer to the screen.  
-The gossip instances are loaded from `Gossip_Data.xml` and will occur on the `startTick` specified in the file, the start tick relates to the `NPCs ticked counter` on the `NPC Details` pannel.  
-NPCs will wait `1 NPC tick` after hearing a gossip instance before the start spreading it.  
 
 -----
 
