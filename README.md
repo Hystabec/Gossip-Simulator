@@ -73,16 +73,17 @@ This panel alows the user to:
 * Restart the simulation  
 
 The `Play` button (which become `Pause` while the simulator is running) allows the user to start and stop the simulation.  
-The `Next Tick` button allows the user to manually move the simulation to the next update tick (can be used while the simulation is both running and paused).  
+The `Next Tick` button allows the user to manually move the simulation to the next update tick (can be used while the simulation is both running or paused).  
 The `Restart` button allows the user the restart the simulation to the beginning.  
 
 ### NPC Details Panel
 The `NPC Details` panel shows the `NPCs ticked counter` this counter is updated each time the NPCs are ticked, this counter is also show on the `Simulator Controls` panel as the `Current Tick` counter.  
 While an NPC is hovered (with the mouse cursor), the `NPC Details` panel will display the details of that NPC.  
-Details show include:  
+Details shown include:  
 1. The name of the NPC  
 2. The personality of the NPC  
 3. A relationship table  
+
 The `relationship table` show all the other NPCs that the hovered NPC knows as well as if the relationship is `Positive` or `Negative`.  
 
 ### Gossip Selector Panel
@@ -96,6 +97,7 @@ These details are:
 * The ID of the gossip (which is specified in `Gossip_Data.xml`)  
 * The name of the NPC that the gossip is about  
 * The type of the gossip (`Positive`, `Negative` or `Neutral`)  
+
 The `Event List` show the tick the gossip started on and the NPC that started it.  
 The `Event List` also has a table that contains each of the events of the gossip.  
 A `gossip event` consists of:
@@ -103,6 +105,7 @@ A `gossip event` consists of:
 * The name of the NPC that was spreading the gossip  
 * The name of the NPC that heard the gossip  
 * The outcome of the gossip (If it was `Remembered` or `Ignored`)  
+
 If the `(?)` is hovered over on the `Outcome` result the reason for remebering or ignore the gossip will be displayed.  
 
 -----
