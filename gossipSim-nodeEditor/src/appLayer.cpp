@@ -59,6 +59,50 @@ void AppLayer::imGuiRender()
 			ImGui::EndMenu();
 		}
 
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("New NPC", NULL, false, m_currentFileType == XMLFileType::NPC))
+			{
+				int i = 1;
+				std::string currCheck = "New NPC";
+				while (m_idSet.contains(currCheck))
+				{
+					currCheck = daedalusCore::debug::Log::formatLogMessage("New NPC({})", i);
+					i++;
+				}
+
+				auto newNPC = m_currentXmlFile.child("listOfNPC").append_child("NPC");
+				newNPC.append_attribute("name");
+				newNPC.attribute("name").set_value(currCheck);
+				newNPC.append_child("relationships");
+				m_idSet.insert(currCheck);
+			}
+
+			if (ImGui::MenuItem("New Gossip", NULL, false, m_currentFileType == XMLFileType::Gossip))
+			{
+				int i = 1;
+				std::string currCheck = "New Gossip";
+				while (m_idSet.contains(currCheck))
+				{
+					currCheck = daedalusCore::debug::Log::formatLogMessage("New Gossip({})", i);
+					i++;
+				}
+
+				auto newNPC = m_currentXmlFile.child("listOfGossipEvents").append_child("Event");
+				newNPC.append_attribute("id");
+				newNPC.attribute("id").set_value(currCheck);
+				newNPC.append_attribute("type");
+				newNPC.attribute("type").set_value("neutral");
+				newNPC.append_attribute("about");
+				newNPC.append_attribute("startingFrom");
+				newNPC.append_attribute("startTick");
+				newNPC.attribute("startTick").set_value(0);
+				m_idSet.insert(currCheck);
+			}
+
+			ImGui::EndMenu();
+		}
+
 		ImGui::EndMainMenuBar();
 	}
 
@@ -189,15 +233,85 @@ void AppLayer::imGuiRender()
 		{
 			pugi::xml_node npcNode = m_currentXmlFile.child("listOfGossipEvents").find_child_by_attribute("id", m_currentNodeName.c_str());
 
+			char strInputBuffer[128];
+
 			ImGui::Text("Gossip ID: %s", m_currentNodeName.c_str());
+			/*ImGui::Text("Gossip ID:");
+			ImGui::SameLine();
+			ImGui::PushID("gossipDataName");
+			sprintf_s(strInputBuffer, m_currentNodeName.c_str());
+			if (ImGui::InputText("##", strInputBuffer, sizeof(strInputBuffer) / sizeof(char)))
+			{
+				if (m_idSet.contains(strInputBuffer))
+				{
+
+				}
+				else
+				{
+					npcNode.attribute("id").set_value(strInputBuffer);
+					m_idSet.erase(m_currentNodeName);
+					m_currentNodeName = strInputBuffer;
+				}
+			}
+			ImGui::PopID();*/
+
 			ImGui::Separator();
-			ImGui::Text("Type: %s", npcNode.attribute("type").as_string());
+
+			ImGui::Text("Type:"); //npcNode.attribute("type").as_string());
+			ImGui::SameLine();
+
+			const char* gossipTypes[] = { "positive", "negative", "neutral" };
+			std::string gossipBuffer = npcNode.attribute("type").as_string();
+			int currSel;
+			if (gossipBuffer == "positive")
+				currSel = 0;
+			else if (gossipBuffer == "negative")
+				currSel = 1;
+			else
+				currSel = 2;
+
+			ImGui::PushID("gossipDataType");
+			if (ImGui::Combo("", &currSel, gossipTypes, sizeof(gossipTypes) / sizeof(*gossipTypes)))
+			{
+				if (currSel == 0)
+					npcNode.attribute("type").set_value("positive");
+				else if(currSel == 1)
+					npcNode.attribute("type").set_value("negative");
+				else
+					npcNode.attribute("type").set_value("neutral");
+			}
+			ImGui::PopID();
+
 			ImGui::Separator();
-			ImGui::Text("NPC about: %s", npcNode.attribute("about").as_string());
+			ImGui::Text("NPC about:");
+			ImGui::SameLine();
+			ImGui::PushID("gossipDataAbout");
+			strcpy_s(strInputBuffer, npcNode.attribute("about").as_string());
+			if (ImGui::InputText("", strInputBuffer, sizeof(strInputBuffer)/sizeof(char)))
+			{
+				npcNode.attribute("about").set_value(strInputBuffer);
+			}
+			ImGui::PopID();
+
 			ImGui::Separator();
-			ImGui::Text("NPC starting from: %s", npcNode.attribute("startingFrom").as_string());
+			ImGui::Text("NPC starting from:");
+			ImGui::SameLine();
+			ImGui::PushID("gossipDataFrom");
+			sprintf_s(strInputBuffer, npcNode.attribute("startingFrom").as_string());
+			if (ImGui::InputText("", strInputBuffer, sizeof(strInputBuffer) / sizeof(char)))
+			{
+				npcNode.attribute("startingFrom").set_value(strInputBuffer);
+			}
+			ImGui::PopID();
 			ImGui::Separator();
-			ImGui::Text("Starting on NPC tick: %s", npcNode.attribute("startTick").as_string());
+
+			ImGui::Text("Starting on NPC tick:");
+			ImGui::SameLine();
+			ImGui::PushID("gossipDataTick");
+			int tickInt = npcNode.attribute("startTick").as_int();
+			if (ImGui::InputInt("", &tickInt))
+				npcNode.attribute("startTick").set_value(tickInt);
+			ImGui::PopID();
 		}
 		else
 		{
@@ -207,6 +321,7 @@ void AppLayer::imGuiRender()
 		ImGui::End();
 	}
 
+	//ImGui::ShowDemoWindow();
 }
 
 void AppLayer::onEvent(daedalusCore::event::Event& e)
@@ -217,37 +332,87 @@ void AppLayer::setOpenFile(const std::string& file)
 {
 	if (file.find(".xml") != std::string::npos)
 	{
-		pugi::xml_parse_result result = m_currentXmlFile.load_file(file.c_str());
-
-		if (!result)
-			DD_ASSERT(false, DD_ASSERT_FORMAT_MESSAGE("Couldnt find {}", file));
+		pugi::xml_document checkDoc;
+		checkDoc.load_file(file.c_str());
+		//pugi::xml_parse_result result = m_currentXmlFile.load_file(file.c_str());
+		
+		//if (!result)
+		//	DD_ASSERT(false, DD_ASSERT_FORMAT_MESSAGE("Couldnt find {}", file));
 
 		//Try NPC File
-		if (m_currentXmlFile.child("listOfNPC"))
+		if (checkDoc.child("listOfNPC"))
+		{
 			m_currentFileType = XMLFileType::NPC;
+			if (!getIDsFromFile(checkDoc))
+			{
+				DD_LOG_ERROR("FILE LOAD ERROR: Duplicate NPC names found in XML File");
+				m_currentFileType = XMLFileType::None;
+				return;
+			}
+		}
 		//Try Gossip File
-		else if (m_currentXmlFile.child("listOfGossipEvents"))
+		else if (checkDoc.child("listOfGossipEvents"))
+		{
 			m_currentFileType = XMLFileType::Gossip;
+			if (!getIDsFromFile(checkDoc))
+			{
+				DD_LOG_ERROR("FILE LOAD ERROR: Duplicate Gossip IDs found in XML File");
+				m_currentFileType = XMLFileType::None;
+				return;
+			}
+		}
 		//Check if empty
-		else if (!m_currentXmlFile.document_element())	
+		else if (!checkDoc.document_element())	
 			m_currentFileType = XMLFileType::Empty;
 		//Else make a warning
 		else
 		{
-			DD_LOG_WARN("File contain invalid data format");
+			DD_LOG_ERROR("FILE LOAD ERROR: File contain invalid data format");
 			return;
 		}
 	}
 	else
 	{
-		DD_LOG_WARN("Selected file is not .XML format");
+		DD_LOG_ERROR("FILE LOAD ERROR: Selected file is not .XML format");
 		return;
 	}
 
 	//only gets here if a new file is choosen - reset any data reqired
+	m_currentXmlFile.load_file(file.c_str()); //loading a second time isnt ideal but it stops a bug occuring 
+
 	m_currentFile = file;
 	m_selectedItem = 0;
 	m_currentNodeName = "";
 	m_selectedNode = false;
 	m_selectedTableRow = -1;
+}
+
+bool AppLayer::getIDsFromFile(const pugi::xml_document& curDoc)
+{
+	m_idSet.clear();
+
+	if (m_currentFileType == XMLFileType::NPC)
+	{
+		for (auto npc : curDoc.child("listOfNPC"))
+		{
+			if (!(m_idSet.insert(npc.attribute("name").value()).second))
+			{
+				DD_LOG_WARN("Durplicate NPC name: {}", npc.attribute("name").value());
+				return false;
+			}
+		}
+	}
+	else if (m_currentFileType == XMLFileType::Gossip)
+	{
+		for (auto gossip : curDoc.child("listOfGossipEvents"))
+		{
+			if (!(m_idSet.insert(gossip.attribute("id").value()).second))
+			{
+				DD_LOG_WARN("Durplicate Gossip id: {}", gossip.attribute("id").value());
+				return false;
+			}
+		}
+	}
+
+	return true;
 }

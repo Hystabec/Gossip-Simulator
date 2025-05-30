@@ -2,6 +2,7 @@
 
 #include <Daedalus.h>
 #include "pugixml.hpp"
+#include <set>
 
 enum class XMLFileType
 {
@@ -24,6 +25,7 @@ public:
 
 private:
 	void setOpenFile(const std::string& file);
+	bool getIDsFromFile(const pugi::xml_document& curDoc);
 
 	XMLFileType m_currentFileType = XMLFileType::None;
 	std::string m_currentFile = "";
@@ -32,6 +34,7 @@ private:
 	bool m_selectedNode = false;
 	std::string m_currentNodeName = "";
 	int m_selectedTableRow = -1;
+	std::set<std::string> m_idSet;
 
 	uint32_t m_selectedItem = 0;
 };
