@@ -74,9 +74,13 @@ void AppLayer::imGuiRender()
 				auto newNPC = m_currentXmlFile.child("listOfNPC").append_child("NPC");
 				newNPC.append_attribute("name");
 				newNPC.attribute("name").set_value(currCheck);
+				newNPC.append_child("personality");
+				newNPC.child("personality").append_attribute("type").set_value("none");
 				newNPC.append_child("relationships");
 				m_idSet.insert(currCheck);
 			}
+			if(!(m_currentFileType == XMLFileType::NPC))
+				ImGui::SetItemTooltip("Open a NPC file to add new NPC");
 
 			if (ImGui::MenuItem("New Gossip", NULL, false, m_currentFileType == XMLFileType::Gossip))
 			{
@@ -99,8 +103,11 @@ void AppLayer::imGuiRender()
 				newNPC.attribute("startTick").set_value(0);
 				m_idSet.insert(currCheck);
 			}
+			if(!(m_currentFileType == XMLFileType::Gossip))
+				ImGui::SetItemTooltip("Open a Gossip file to add new gossip");
 
-			if (ImGui::MenuItem("Rename Selected Item", NULL, false, (m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
+			//if (ImGui::MenuItem("Rename Selected Item", NULL, false, (m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
+			if (ImGui::MenuItem("Rename Selected Item", NULL, false, false))
 			{
 				pugi::xml_node toRemove;
 				for (auto node : m_currentXmlFile.child(m_currentFileType == XMLFileType::Gossip ? "listOfGossipEvents" : "listOfNPC"))
@@ -111,9 +118,8 @@ void AppLayer::imGuiRender()
 						break;
 					}
 				}
-
-				DD_LOG_INFO(open_text_dialog("Hello World"));
 			}
+			ImGui::SetItemTooltip("Renaming of items is not currently support, Name can be Manually changed in the XML file");
 
 			if (ImGui::MenuItem("Delete Selected Item", NULL, false, (m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
 			{
@@ -132,6 +138,30 @@ void AppLayer::imGuiRender()
 				m_selectedItem = -1;
 				m_selectedNode = false;
 			}
+			if(!((m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
+				ImGui::SetItemTooltip("Open a file then select an NPC or Gossip to delete");
+
+			if (ImGui::MenuItem("Add NPC Relationship", NULL, false, m_currentFileType == XMLFileType::NPC && m_selectedItem != -1))
+			{
+				pugi::xml_node toAddTo;
+				for (auto node : m_currentXmlFile.child("listOfNPC"))
+				{
+					if (node.attribute("name").value() == m_currentNodeName)
+					{
+						toAddTo = node;
+						break;
+					}
+				}
+
+				auto relashionNode = toAddTo.child("relationships").append_child("relation");
+				relashionNode.append_attribute("npc").set_value("");
+				relashionNode.append_attribute("value").set_value(10);
+			}
+			if (!(m_currentFileType == XMLFileType::NPC && m_selectedItem != -1))
+				ImGui::SetItemTooltip("Open an NPC file an select an NPC");
+
+			ImGui::MenuItem("Delete NPC Relationship", NULL, false, false);
+			ImGui::SetItemTooltip("Deleting of NPC is not currently supported, Relationship can be manually removed in the NPC XML file");
 
 			ImGui::EndMenu();
 		}
@@ -160,8 +190,6 @@ void AppLayer::imGuiRender()
 		}
 	}
 #pragma endregion
-
-	
 
 	ImGui::End();
 
@@ -194,18 +222,54 @@ void AppLayer::imGuiRender()
 
 			ImGui::Separator();
 
-			pugi::xml_node personalityNode = npcNode.child("personality");
+			/*pugi::xml_node personalityNode = npcNode.child("personality");
 			if (personalityNode)
 				ImGui::Text("Pesonality: %s", personalityNode.attribute("type").as_string());
 			else
-				ImGui::Text("Pesonality: None");
+				ImGui::Text("Pesonality: None")*/;
+
+			/////
+
+			ImGui::Text("Pesonality:"); //npcNode.attribute("type").as_string());
+			ImGui::SameLine();
+
+			if (npcNode.child("personality").empty())
+			{
+				auto personalityNode = npcNode.append_child("personality");
+				personalityNode.append_attribute("type");
+				personalityNode.attribute("type").set_value("none");
+			}
+
+			const char* personalityTypes[] = { "none", "spreader", "sink" };
+			std::string personBuffer = npcNode.child("personality").attribute("type").as_string();
+			int currSel;
+			if (personBuffer == "spreader")
+				currSel = 1;
+			else if (personBuffer == "sink")
+				currSel = 2;
+			else
+				currSel = 0;
+
+			ImGui::PushID("npcPersonalityType");
+			if (ImGui::Combo("", &currSel, personalityTypes, sizeof(personalityTypes) / sizeof(*personalityTypes)))
+			{
+				if (currSel == 1)
+					npcNode.child("personality").attribute("type").set_value("spreader");
+				else if (currSel == 2)
+					npcNode.child("personality").attribute("type").set_value("sink");
+				else
+					npcNode.child("personality").attribute("type").set_value("none");
+			}
+			ImGui::PopID();
+
+			////
 
 			ImGui::Separator();
 
 			if (ImGui::BeginTable("relationshipTable", 2, ImGuiTableFlags_Borders))
 			{
 				ImGui::TableSetupColumn("NPC");
-				ImGui::TableSetupColumn("Relation");
+				ImGui::TableSetupColumn("Relationship");
 				//ImGui::TableSetupColumn("Remove");
 				ImGui::TableHeadersRow();
 
@@ -215,10 +279,38 @@ void AppLayer::imGuiRender()
 					ImGui::TableNextRow();
 
 					ImGui::TableSetColumnIndex(0);
-					ImGui::Text(node_relation.attribute("npc").as_string());
+					char strInputBuffer[128];
+					sprintf_s(strInputBuffer, "npcRelName%i", i);
+					ImGui::PushID(strInputBuffer);
+					strcpy_s(strInputBuffer, node_relation.attribute("npc").as_string());
+					if (ImGui::InputText("", strInputBuffer, sizeof(strInputBuffer) / sizeof(char)))
+					{
+						node_relation.attribute("npc").set_value(strInputBuffer);
+					}
+					ImGui::PopID();
 
 					ImGui::TableSetColumnIndex(1);
-					ImGui::Text(node_relation.attribute("value").as_int() > 0 ? "positve" : "negative");
+	
+					const char* relationTypes[] = { "positive", "negative"};
+					int relVal = node_relation.attribute("value").as_int();
+					int currSel;
+					if (relVal > 0)
+						currSel = 0;
+					else
+						currSel = 1;
+
+					sprintf_s(strInputBuffer, "npcRelVal%i", i);
+					ImGui::PushID(strInputBuffer);
+					if (ImGui::Combo("", &currSel, relationTypes, sizeof(relationTypes) / sizeof(*relationTypes)))
+					{
+						if (currSel == 0)
+							node_relation.attribute("value").set_value(10);
+						else
+							node_relation.attribute("value").set_value(-10);
+					}
+					ImGui::PopID();
+
+		
 
 					/*
 					ImGui::TableSetColumnIndex(2);
@@ -353,8 +445,6 @@ void AppLayer::imGuiRender()
 
 		ImGui::End();
 	}
-
-	ImGui::ShowDemoWindow();
 }
 
 void AppLayer::onEvent(daedalusCore::event::Event& e)

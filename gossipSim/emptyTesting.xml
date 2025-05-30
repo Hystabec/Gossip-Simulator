@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<listOfGossipEvents>
-	<Event id="44" type="positive" about="Alpha" startingFrom="Beta" startTick="10" />
-	<Event id="New Gossip(1)" type="negative" about="Hello" startingFrom="John" startTick="765" />
-</listOfGossipEvents>

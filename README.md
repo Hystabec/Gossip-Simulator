@@ -110,17 +110,54 @@ If the `(?)` is hovered over on the `Outcome` result the reason for remebering o
 
 -----
 
-`gossipSim-nodeEditor` is a helper program that allow the viewing of the contents of the XML data files with a UI.  
-(Currently the program only has the ability to read the files.)  
-When executed the user will need to open an XML file `File -> Open`.  
-Select either `NPC_Data.xml` OR `Gossip_Data.xml`.  
-If the `NPC file was opened`, select an NPC from the `NPC List` panel the view the details about the NPC.  
-If the `gossip file was opened`, select a gossip instance from the `Gossip List` panel the view the details about the gossip.  
-Currently the `Save` feature doesn't work, in the future the program could also edit the selected files.  
+`gossipSim-nodeEditor` is a helper program that allow the `viewing and editing` of the contents of the XML data files with a UI.  
+When executed a `Window` will spawn.  
+
+The `Window` will initially show no data a will display the text:  
+```
+No file selected
+Select the XML file to modify (File -> Open)
+```
+To open an XML file navigate to the `File` menu on the `Menu Bar` and select `Open`.  
+Once selected a `File Open Dialog` will appear, then open either `NPC_Data.xml` or `Gossip_Data.xml`.  
+
+This program has `NO AUTOMATIC SAVING`, so if you want to save any changes that you have made, navigate to the `File` menu on the `Menu Bar` and select `Save`, which will save the the file that was being viewed.  
+
+### NPC File Navigation
+If an `NPC` file was opened.  
+The `NPC List` panel will display all the NPC within the file.  
+The `NPC List` panel will remain empty if no NPC were found in the file.  
+A `new NPC can be added` by navigating to the `Edit` menu on the `Menu Bar` and selecting `New NPC`.  
+Once an `NPC` from the `NPC List` panel is selected data about the selected NPC will be show on the `NPC Data` panel.  
+In the `NPC Data` panel values about the NPC can be `View and Edited`.  
+The `NPC name` cannot currently be Edited inside of the program and will need to be done manually in the XML file.  
+The `Personality` can be edited by selecting either `none`, `spreader` or `sink` from the `drop down menu`, the `drop down menu` can be opened by clicking on the current personality.  
+The `Relationship Table` show all the relationships of the currently selected NPC.  
+The `Add` a new relationship navigate to the `Edit` menu on the `Menu Bar` and select `Add NPC Relationship`, this will add a blank element into the table.  
+The `NPC name` on the `relationships table` can be edited by clicking in the name box and typing the new name.  
+The `Relationship` on the `relationships table` can be edited by clikcing on the relation box and selecting either `positive` or `negative` from the `drop down menu`.  
+The currently selected NPC can be `deleted` by navigating to the `Edit` menu on the `Menu Bar` and selecting `Delete Selected Item`.  
+
+### Gossip File Navigation
+If a `Gossip` file was opened.  
+The `Gossip List` panel will display all the gossip instances within the file.  
+The `Gossip List` panel will remain empty if no gossip instances were found in the file.  
+A `new gossip can be added` by navigating to the `Edit` menu on the `Menu Bar` and select `New Gossip`.  
+Once a `Gossip` from the `Gossip List` panel is selected data about the selected gossip instance will be show on the `Gossip Data` panel.  
+In the `Gossip Data` panel values about the gossip can be `View and Edited`.  
+The `gossip name` cannot currently be Edited inside of the program and will need to be done manually in the XML file.  
+The gossip `Type` can be edited by selecting either `positive`, `negative` or `neutral` from the `drop down menu`, the `drop down menu` can be opened by clicking on the current type.  
+The `NPC` the gossip is `about` can be edited by clicking in the box and typing the new NPC name.  
+The `NPC` the gossip is `starting from` can be edited by clicking in the box and typing the new NPC name.  
+The `start tick` for the gossip can be edited by clicking in the box and typing the new start tick (as an interger).  
+The currently selected gossip can be `deleted` by navigating to the `Edit` menu on the `Menu Bar` and selecting `Delete Selected Item`.  
+
+If you want to `save` any changes that have been made to the current file, navigate to the `File` menu on the `Menu Bar` and select `Save`.  
 
 ## Editing XML files
 Currently `gossipSim` can only read `NPC_Data.xml` and `Gossip_Data.xml`.  
 So to effect the simulation `NPC_Data.xml` and `Gossip_Data.xml` need to be changed/updated.  
+The files can either be changed using `gossipSim-nodeEditor` or can be changed manually.  
 
 NPC data can be Edited in the `NPC_Data.xml` file.  
 The NPC data file follows the structure.  
