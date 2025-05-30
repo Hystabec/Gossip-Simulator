@@ -1,7 +1,8 @@
 # Gossip-Simulator
 
 Only `Windows` is supported.  
-Compiled program can be found on the [Release Tab](https://github.com/Hystabec/Gossip-Simulator/releases)  
+Compiled program can be found on the [Release Tab](https://github.com/Hystabec/Gossip-Simulator/releases).  
+Built using my game engine [DaedalusEngine](https://github.com/Hystabec/DaedalusEngine).  
 
 The project contains 2 application `gossipSim` and `gossipSim-nodeEditor`.  
 `gossipSim` is the main application that runs the simulator.  
@@ -212,6 +213,8 @@ Currently as the `spreading` of gossip can happen fast, if you want to see the `
 
 Sometimes a `graphical artifact` can appear, I think this is due to the renderer reading uninitialized memory (haven't had time to fix yet).  
 To fix the artifacting close an reopen the program (might need to do a few times).  
+
+I wanted to add arrows between each of the nodes to show relationship as well as the spread of gossip, however the engine i'm using (My custom game engine) had issue rending the arrows at certain angles and it cause the whole thing to look more confusing so i decided against it.  
 
 
 ## Installation (Uncompiled Project)
