@@ -6,7 +6,7 @@ Built using my game engine [DaedalusEngine](https://github.com/Hystabec/Daedalus
 
 The project contains 2 application `gossipSim` and `gossipSim-nodeEditor`.  
 `gossipSim` is the main application that runs the simulator.  
-`gossipSim-nodeEditor` is a helper program that allows the user to view the XML files (`NPC_Data.xml`, `Gossip_Data.xml`) with a GUI.  
+`gossipSim-nodeEditor` is a helper program that allows the user to `view and edit` the XML files (`NPC_Data.xml`, `Gossip_Data.xml`) with a GUI.  
 
 ## Simulation Description
 The number of NPCs and their relationships is defined in `NPC_Data.xml`.  
