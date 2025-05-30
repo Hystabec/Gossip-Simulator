@@ -36,5 +36,5 @@ private:
 	int m_selectedTableRow = -1;
 	std::set<std::string> m_idSet;
 
-	uint32_t m_selectedItem = 0;
+	int m_selectedItem = -1;
 };

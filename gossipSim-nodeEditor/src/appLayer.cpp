@@ -100,6 +100,39 @@ void AppLayer::imGuiRender()
 				m_idSet.insert(currCheck);
 			}
 
+			if (ImGui::MenuItem("Rename Selected Item", NULL, false, (m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
+			{
+				pugi::xml_node toRemove;
+				for (auto node : m_currentXmlFile.child(m_currentFileType == XMLFileType::Gossip ? "listOfGossipEvents" : "listOfNPC"))
+				{
+					if (node.attribute(m_currentFileType == XMLFileType::Gossip ? "id" : "name").value() == m_currentNodeName)
+					{
+						toRemove = node;
+						break;
+					}
+				}
+
+				DD_LOG_INFO(open_text_dialog("Hello World"));
+			}
+
+			if (ImGui::MenuItem("Delete Selected Item", NULL, false, (m_currentFileType == XMLFileType::Gossip || m_currentFileType == XMLFileType::NPC) && m_selectedItem != -1))
+			{
+				pugi::xml_node toRemove;
+				for (auto node : m_currentXmlFile.child(m_currentFileType == XMLFileType::Gossip ? "listOfGossipEvents" : "listOfNPC"))
+				{
+					if (node.attribute(m_currentFileType == XMLFileType::Gossip ? "id" : "name").value() == m_currentNodeName)
+					{
+						toRemove = node;
+						break;
+					}
+				}
+				
+				m_currentXmlFile.child(m_currentFileType == XMLFileType::Gossip ? "listOfGossipEvents" : "listOfNPC").remove_child(toRemove);
+				m_currentNodeName = "";
+				m_selectedItem = -1;
+				m_selectedNode = false;
+			}
+
 			ImGui::EndMenu();
 		}
 
@@ -136,7 +169,7 @@ void AppLayer::imGuiRender()
 	{
 		ImGui::Begin("NPC List");
 		
-		int i = -1;
+		int i = 0;
 		for (pugi::xml_node& child : m_currentXmlFile.child("listOfNPC"))
 		{
 			if (ImGui::Selectable(child.attribute("name").as_string(), m_selectedItem == i && m_selectedNode) && m_selectedItem != i)
@@ -212,7 +245,7 @@ void AppLayer::imGuiRender()
 	{
 		ImGui::Begin("Gossip List");
 		
-		int i = -1;
+		int i = 0;
 		for (pugi::xml_node& child : m_currentXmlFile.child("listOfGossipEvents"))
 		{
 			if (ImGui::Selectable(child.attribute("id").as_string(), m_selectedItem == i && m_selectedNode) && m_selectedItem != i)
@@ -321,7 +354,7 @@ void AppLayer::imGuiRender()
 		ImGui::End();
 	}
 
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 }
 
 void AppLayer::onEvent(daedalusCore::event::Event& e)
@@ -381,7 +414,7 @@ void AppLayer::setOpenFile(const std::string& file)
 	m_currentXmlFile.load_file(file.c_str()); //loading a second time isnt ideal but it stops a bug occuring 
 
 	m_currentFile = file;
-	m_selectedItem = 0;
+	m_selectedItem = -1;
 	m_currentNodeName = "";
 	m_selectedNode = false;
 	m_selectedTableRow = -1;
