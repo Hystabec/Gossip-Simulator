@@ -2,6 +2,7 @@
 
 #include "imgui.h"
 #include "mathsUtils/vec2Utils.h"
+#include "graphics/arrow2D.h"
 
 //GS::simCore gossipCore;
 
@@ -18,6 +19,9 @@
 #define COLOUR_RELATIONS 1
 #define USE_TEST_GOSSIP 1
 #define TICK_ONCE_SECOND 1
+
+#define SHOW_GLITCH_ARROWS 0
+#define MOVEABLE_NPC 0
 
 SimLayer::SimLayer()
 	: m_camController(1280.0f / 720.0f), m_npcManager("NPC_Data.xml")
@@ -101,25 +105,54 @@ void SimLayer::update(const daedalusCore::application::DeltaTime& dt)
 	}
 
 #endif
-#if USE_TEST_GOSSIP
+
+
+	/*if (m_selectedGossip != 0)
+	{
+		auto gossipNPCVec = m_gossipManager.getNPCsHeardGossip(m_selectedGossip);
+
+		for (auto npc : gossipNPCVec)
+			const_cast<GS::npc::NPC*>(npc)->setColour({ 0.6f, 0.0f, 0.7f, 1.0f });
+	}*/
+
+
+#if MOVEABLE_NPC
+	if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
+		m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
+#endif
+
+	daedalusCore::graphics::RenderCommands::setClearColour({0.14f, 0.14f, 0.14f, 1.0f});
+	daedalusCore::graphics::RenderCommands::clear();
+
+	daedalusCore::graphics::Renderer2D::begin(m_camController.getCamera());
 
 	if (m_selectedGossip != 0)
 	{
 		auto gossipNPCVec = m_gossipManager.getNPCsHeardGossip(m_selectedGossip);
 
 		for (auto npc : gossipNPCVec)
+		{
 			const_cast<GS::npc::NPC*>(npc)->setColour({ 0.6f, 0.0f, 0.7f, 1.0f });
+
+#if SHOW_GLITCH_ARROWS
+			const auto& dGossip = m_gossipManager.getDetailedGossipFromID(m_selectedGossip);
+			for (const auto& event : dGossip.eventMap)
+			{
+				for (const auto& gossipEvent : event.second)
+				{
+					auto spreadVec = m_npcManager.findNPC(gossipEvent.spreader).getPosition();
+					auto listenVec = m_npcManager.findNPC(gossipEvent.listener).getPosition();
+
+					renderArrow(spreadVec,
+						listenVec,
+						gossipEvent.outcome == true ? daedalusCore::maths::vec4(0.0f, 1.0f, 0.0f, 1.0f) : daedalusCore::maths::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+				}
+			}
+#endif
+		}
 	}
 
-#endif
-
-	//if (daedalusCore::application::Input::getMouseButton(DD_INPUT_MOUSE_BUTTON_1) && m_mouseInBoundsThisFrame)
-	//	m_hoveredNPC->setPosition(m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()));
-
-	daedalusCore::graphics::RenderCommands::setClearColour({0.14f, 0.14f, 0.14f, 1.0f});
-	daedalusCore::graphics::RenderCommands::clear();
-
-	daedalusCore::graphics::Renderer2D::begin(m_camController.getCamera());
+	//renderArrow(m_npcManager.findNPC("Alpha").getPosition(), m_camController.mouseToWorldPosition(daedalusCore::application::Input::getMousePosition()), {0.0f, 1.0f, 0.0f, 1.0f});
 
 	for (auto& npc : m_npcManager.getNPCVec())
 		npc.render();

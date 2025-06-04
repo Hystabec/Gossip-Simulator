@@ -12,5 +12,11 @@ float mathsUtils::vec2_magnitude(const daedalusCore::maths::vec2& vec)
 
 float mathsUtils::angle_of_vec2(const daedalusCore::maths::vec2& vec)
 {
-    return atan2(vec.y, vec.x);
+    return -atan2(vec.y, vec.x);
+}
+
+daedalusCore::maths::vec2 mathsUtils::vec2_normalize(const daedalusCore::maths::vec2& vec)
+{
+    float mag = vec2_magnitude(vec);
+    return {vec.x / mag, vec.y / mag};
 }

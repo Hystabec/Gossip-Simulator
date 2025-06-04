@@ -119,7 +119,7 @@ namespace GS::npc {
 			daedalusCore::graphics::Renderer2D::drawRotatedQuad(
 				{
 					{ centrePoint.x, centrePoint.y, -0.1f },
-					{ ((float)abs(diffrence.x) + (float)abs(diffrence.y)) , relationLineWidth},
+					{ ((float)abs(mathsUtils::vec2_magnitude(diffrence))) , relationLineWidth},
 					mathsUtils::angle_of_vec2(diffrence),
 					npcRel.second >= 0 ? positiveRelationColour : negativeRelationColour
 				});
