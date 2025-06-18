@@ -20,8 +20,8 @@
 #define USE_TEST_GOSSIP 1
 #define TICK_ONCE_SECOND 1
 
-#define SHOW_GLITCH_ARROWS 0
-#define MOVEABLE_NPC 0
+#define SHOW_GLITCH_ARROWS 1
+#define MOVEABLE_NPC 1
 
 SimLayer::SimLayer()
 	: m_camController(1280.0f / 720.0f), m_npcManager("NPC_Data.xml")
